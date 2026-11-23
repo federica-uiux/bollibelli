@@ -293,6 +293,11 @@ details.manual summary:hover .chev{border-color:var(--ink)}
 
 #result{overflow-x:clip}
 @media (max-width:600px){.pm-wrap{right:-24%;width:62%}}
+
+/* saluto: su desktop nella colonna della frase, così si vede senza scorrere; su mobile sotto il risultato */
+#greet-side .greet{margin-top:28px;width:min(420px,100%)}
+@media (min-width:881px){#result .greet{display:none}}
+@media (max-width:880px){#greet-side{display:none}}
 </style>
 </head>
 <body>
@@ -315,6 +320,7 @@ details.manual summary:hover .chev{border-color:var(--ink)}
         <span class="fill combo" id="combo"><button class="combo-btn" id="combo-btn" aria-haspopup="listbox" aria-expanded="false"><span class="ph" id="combo-label">Scegli il Paese</span><svg class="chev" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><path d="m6 9 6 6 6-6"/></svg></button>
           <span class="pop" id="pop"><span class="search"><input id="search" placeholder="Cerca un paese" autocomplete="off"></span><span class="list" id="list" role="listbox" style="display:block"></span></span></span><span id="weight-block"> che pesa <span class="weights" id="weights"></span>.</span></p>
       <p class="selected-line" id="sel-line" hidden><span id="sel-name"></span><span id="sel-zone"></span></p>
+      <div id="greet-side"></div>
     </div>
     <div id="result"></div>
   </section>
@@ -810,11 +816,12 @@ function seasonSVG(){const s=SEASON_ART[seasonNow()];return s?`<svg class="seaso
 window.__season=true;
 document.querySelectorAll("[data-art]").forEach(el=>{const z=+el.dataset.art;el.innerHTML=stampHTML(z,CODES[z],"")});
 const _rtC=renderTrova;
-renderTrova=function(){_rtC();const c=countryObj(),h=document.querySelector("#result .res .holder");
+renderTrova=function(){_rtC();$("greet-side").innerHTML="";const c=countryObj(),h=document.querySelector("#result .res .holder");
   if(c&&h&&document.querySelector("#result .price")){
     const pm=document.createElement("div");pm.className="pm-wrap";pm.innerHTML=postmarkSVG();h.appendChild(pm);
     h.classList.add("thump");
     const what=document.querySelector("#result .what");if(what&&c.zone)what.insertAdjacentHTML("afterend",greetingHTML(c.name));
+    $("greet-side").innerHTML=c.zone?greetingHTML(c.name):"";
   }};
 renderTrova();
 
