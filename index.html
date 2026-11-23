@@ -173,7 +173,7 @@ main>.tabs .tab{padding:8px 18px;font-size:13.5px}
 #view-trova>div:first-child{align-self:start;padding-top:clamp(8px,3vw,40px)}
 
 /* chip nel colore della zona */
-.letter{--chip:var(--c,var(--red))}
+.letter{--chip:var(--c,var(--ink))}
 .letter .combo-btn.has{color:var(--chip);background:color-mix(in srgb,var(--chip) 9%,#fff);border-color:color-mix(in srgb,var(--chip) 45%,#fff)}
 .letter .combo-btn.has:hover,.letter .combo-btn.has[aria-expanded="true"]{background:color-mix(in srgb,var(--chip) 16%,#fff);border-color:var(--chip)}
 .letter .combo-btn .chev{color:currentColor}
@@ -243,7 +243,7 @@ body{font-optical-sizing:none;font-variation-settings:"opsz" 11}
     <div>
       <p class="kicker">Calcolatore francobolli</p>
       <p class="letter">Spedisco una lettera in
-        <span class="fill combo" id="combo"><button class="combo-btn" id="combo-btn" aria-haspopup="listbox" aria-expanded="false"><span class="ph" id="combo-label">…dove?</span><svg class="chev" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><path d="m6 9 6 6 6-6"/></svg></button>
+        <span class="fill combo" id="combo"><button class="combo-btn" id="combo-btn" aria-haspopup="listbox" aria-expanded="false"><span class="ph" id="combo-label">Scegli il Paese</span><svg class="chev" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><path d="m6 9 6 6 6-6"/></svg></button>
           <span class="pop" id="pop"><span class="search"><input id="search" placeholder="Cerca un paese" autocomplete="off"></span><span class="list" id="list" role="listbox" style="display:block"></span></span></span><span id="weight-block"> che pesa <span class="weights" id="weights"></span>.</span></p>
       <p class="selected-line" id="sel-line" hidden><span id="sel-name"></span><span id="sel-zone"></span></p>
     </div>
@@ -412,16 +412,16 @@ document.addEventListener("click",e=>{if(!$("combo").contains(e.target))closePop
 function renderTrova(){
   const c=countryObj();
   document.querySelector(".letter").className="letter"+(c?" z"+c.zone:"");
-  $("combo-label").textContent=c?c.name:"…dove?";
+  $("combo-label").textContent=c?c.name:"Scegli il Paese";
   $("combo-btn").classList.toggle("has",!!c);
-  $("sel-line").hidden=!c;$("weight-block").hidden=!c;
+  $("sel-line").hidden=!c;
+  $("weights").innerHTML=weightOptions(c?c.zone:1).map(o=>`<button class="weight" aria-pressed="${state.weight===o.value}" data-w="${o.value}">${o.value==="standard"?"fino a 20 g":"oltre 20 g fino a 50 g"}</button>`).join('<span class="or">o</span>');
   const r=$("result");
   if(!c){
     r.innerHTML=`<div class="res"><div class="ghost">Il tuo francobollo apparirà qui</div></div>`;
     return;
   }
   $("sel-name").textContent=c.name;$("sel-zone").textContent=ZONE_SHORT(c.zone);
-  $("weights").innerHTML=weightOptions(c.zone).map(o=>`<button class="weight" aria-pressed="${state.weight===o.value}" data-w="${o.value}">${o.value==="standard"?"fino a 20 g":"oltre 20 g fino a 50 g"}</button>`).join('<span class="or">o</span>');
   const s=requiredStamp(c.zone,state.weight);
   const heavy=s.code.endsWith("50g");
   const big=s.code.replace(/-?50g$/,"")+(heavy?'<small>50g</small>':"");
