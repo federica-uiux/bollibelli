@@ -167,8 +167,8 @@ footer .heart{color:var(--red)}
 .or{margin:0 .25em}
 
 /* tab sopra il titolo */
-main>.tabs{margin-top:clamp(32px,5vw,56px);display:inline-flex;padding:4px;border:1px solid var(--line);border-radius:999px;background:#fff}
-main>.tabs .tab{padding:8px 18px;font-size:13.5px}
+.toolrow .tabs{display:inline-flex;padding:4px;border:1px solid var(--line);border-radius:999px;background:#fff}
+.toolrow .tabs .tab{padding:8px 18px;font-size:13.5px}
 .grid,.cgrid{padding-top:clamp(28px,4vw,48px)}
 #view-trova>div:first-child{align-self:start;padding-top:clamp(8px,3vw,40px)}
 
@@ -293,6 +293,32 @@ details.manual summary:hover .chev{border-color:var(--ink)}
 
 #result{overflow-x:clip}
 @media (max-width:600px){.pm-wrap{right:-24%;width:62%}}
+
+/* saluto: su desktop nella colonna della frase, così si vede senza scorrere; su mobile sotto il risultato */
+#greet-side .greet{margin-top:28px;width:min(420px,100%)}
+@media (min-width:881px){#result .greet{display:none}}
+@media (max-width:880px){#greet-side{display:none}}
+
+/* ===== Cosa scrivo? ===== */
+.toolrow{display:flex;align-items:center;gap:12px;flex-wrap:wrap;margin-top:clamp(32px,5vw,56px)}
+.ice{position:relative}
+.ice-btn{display:inline-flex;align-items:center;gap:7px;font:600 13.5px var(--sans);color:var(--ink);padding:10px 16px;border-radius:999px;border:1px dashed #8d98ab;background:#fff}
+.ice-btn:hover,.ice-btn[aria-expanded="true"]{border-style:solid;border-color:var(--ink)}
+.ice-btn svg{color:#c2185b}
+.ice-pop{position:absolute;z-index:40;top:calc(100% + 10px);left:0;width:min(400px,calc(100vw - 32px));background:#fff;border:1px solid var(--line);border-radius:18px;padding:20px 20px 16px;box-shadow:0 24px 50px -20px #14213d55}
+.ice-x{position:absolute;top:10px;right:10px;width:30px;height:30px;border-radius:50%;font-size:18px;color:var(--muted)}
+.ice-x:hover{background:var(--paper);color:var(--ink)}
+.ice-k{display:block;font:700 10.5px var(--sans);letter-spacing:.12em;text-transform:uppercase;color:#c2185b;margin-bottom:10px;padding-right:30px}
+.ice-it{font-family:var(--display);font-size:22px;line-height:1.3;font-weight:500}
+.ice-en{display:flex;gap:8px;align-items:baseline;margin-top:10px;font-size:14px;color:var(--muted)}
+.ice-en>span:first-child{font:700 10px var(--sans);letter-spacing:.08em;border:1px solid var(--line);border-radius:4px;padding:1px 4px;flex:none}
+.ice-card.flip{animation:iceIn .35s ease-out}
+@keyframes iceIn{from{opacity:0;transform:translateY(6px)}}
+@media (prefers-reduced-motion:reduce){.ice-card.flip{animation:none}}
+.ice-actions{display:flex;gap:8px;flex-wrap:wrap;margin-top:16px}
+.ice-next{font:600 13.5px var(--sans);padding:9px 14px;border-radius:999px;background:var(--ink);color:#fff}
+.ice-copy{font:600 13.5px var(--sans);padding:9px 14px;border-radius:999px;border:1.5px solid var(--line);background:#fff;color:var(--ink)}
+.ice-copy:hover{border-color:var(--ink)}
 </style>
 </head>
 <body>
@@ -304,10 +330,20 @@ details.manual summary:hover .chev{border-color:var(--ink)}
 </header>
 
 <main class="wrap">
-  <nav class="tabs" role="tablist">
+  <div class="toolrow">
+    <nav class="tabs" role="tablist">
       <button class="tab" role="tab" id="tab-trova" aria-selected="true" data-view="trova">Trova</button>
       <button class="tab" role="tab" id="tab-comb" aria-selected="false" data-view="combinazioni">Combinazioni</button>
     </nav>
+    <div class="ice">
+      <button class="ice-btn" id="ice-btn" aria-haspopup="dialog" aria-expanded="false"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 20h9"/><path d="M16.5 3.5a2.1 2.1 0 0 1 3 3L7 19l-4 1 1-4z"/></svg>Cosa scrivo?</button>
+      <div class="ice-pop" id="ice-pop" role="dialog" aria-label="Idee per rompere il ghiaccio" hidden>
+        <button class="ice-x" id="ice-close" aria-label="Chiudi">×</button>
+        <div class="ice-card" id="ice-card"><span class="ice-k">Un’idea per rompere il ghiaccio</span><p class="ice-it" id="ice-it"></p><p class="ice-en"><span>EN</span><span id="ice-en"></span></p></div>
+        <div class="ice-actions"><button class="ice-next" id="ice-next">↻ Un’altra idea</button><button class="ice-copy" id="ice-copy">Copia in inglese</button></div>
+      </div>
+    </div>
+  </div>
   <section id="view-trova" class="grid">
     <div>
       <p class="kicker">Calcolatore francobolli</p>
@@ -315,6 +351,7 @@ details.manual summary:hover .chev{border-color:var(--ink)}
         <span class="fill combo" id="combo"><button class="combo-btn" id="combo-btn" aria-haspopup="listbox" aria-expanded="false"><span class="ph" id="combo-label">Scegli il Paese</span><svg class="chev" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><path d="m6 9 6 6 6-6"/></svg></button>
           <span class="pop" id="pop"><span class="search"><input id="search" placeholder="Cerca un paese" autocomplete="off"></span><span class="list" id="list" role="listbox" style="display:block"></span></span></span><span id="weight-block"> che pesa <span class="weights" id="weights"></span>.</span></p>
       <p class="selected-line" id="sel-line" hidden><span id="sel-name"></span><span id="sel-zone"></span></p>
+      <div id="greet-side"></div>
     </div>
     <div id="result"></div>
   </section>
@@ -770,7 +807,7 @@ const LANG_OF={
 function greetingHTML(country){
   const L=LANG[LANG_OF[country]];if(!L)return "";
   const w=(t,p)=>`<b>${t}</b>${p?` <i>${p}</i>`:""}`;
-  return `<div class="greet"><span class="greet-k">Scrivi sulla cartolina · ${L[0]}</span>
+  return `<div class="greet"><span class="greet-k">Come si dice in ${L[0]}</span>
     <span class="greet-row"><span>Ciao</span>${w(L[1],L[2])}</span><span class="greet-row"><span>Grazie</span>${w(L[3],L[4])}</span></div>`;
 }
 
@@ -810,14 +847,84 @@ function seasonSVG(){const s=SEASON_ART[seasonNow()];return s?`<svg class="seaso
 window.__season=true;
 document.querySelectorAll("[data-art]").forEach(el=>{const z=+el.dataset.art;el.innerHTML=stampHTML(z,CODES[z],"")});
 const _rtC=renderTrova;
-renderTrova=function(){_rtC();const c=countryObj(),h=document.querySelector("#result .res .holder");
+renderTrova=function(){_rtC();$("greet-side").innerHTML="";const c=countryObj(),h=document.querySelector("#result .res .holder");
   if(c&&h&&document.querySelector("#result .price")){
     const pm=document.createElement("div");pm.className="pm-wrap";pm.innerHTML=postmarkSVG();h.appendChild(pm);
     h.classList.add("thump");
     const what=document.querySelector("#result .what");if(what&&c.zone)what.insertAdjacentHTML("afterend",greetingHTML(c.name));
+    $("greet-side").innerHTML=c.zone?greetingHTML(c.name):"";
   }};
 renderTrova();
 
+/* ===== Cosa scrivo? Idee per rompere il ghiaccio ===== */
+/* [italiano, inglese]: quasi tutti scrivono le cartoline in inglese */
+const ICE=[
+["Racconta cosa vedi dalla finestra mentre scrivi.","Tell them what you can see from your window as you write."],
+["Descrivi il tuo caffè o tè preferito e chiedi qual è il suo.","Describe your favourite coffee or tea and ask about theirs."],
+["Racconta un piatto tipico della tua città e chiedi uno del suo Paese.","Tell them about a typical dish from your town and ask for one from their country."],
+["Racconta che tempo fa oggi da te e chiedi com’è dove vive.","Tell them what the weather is like where you are today, and ask about theirs."],
+["Racconta l’ultimo libro che ti è piaciuto.","Tell them about the last book you really enjoyed."],
+["Spiega perché hai scelto proprio questa cartolina.","Explain why you picked this particular postcard."],
+["Racconta un piccolo momento bello della tua settimana.","Share a small happy moment from your week."],
+["Chiedi qual è il suo posto preferito nella sua città.","Ask about their favourite place in their town."],
+["Racconta una tradizione della tua famiglia o della tua regione.","Tell them about a tradition from your family or your region."],
+["Consiglia una canzone che stai ascoltando in questi giorni.","Recommend a song you’ve been listening to lately."],
+["Scrivi una parola in italiano che ami e spiega cosa significa.","Write an Italian word you love and explain what it means."],
+["Racconta il viaggio più bello che hai fatto (o che sogni di fare).","Tell them about your favourite trip, or the one you dream of."],
+["Chiedi quale stagione preferisce e perché.","Ask which season they like best, and why."],
+["Racconta come hai scoperto Postcrossing.","Tell them how you discovered Postcrossing."],
+["Descrivi il tuo angolo preferito di casa.","Describe your favourite corner of your home."],
+["Racconta un hobby che ti fa perdere la cognizione del tempo.","Tell them about a hobby that makes you lose track of time."],
+["Chiedi qual è la cartolina più bella che ha ricevuto.","Ask about the most beautiful postcard they’ve ever received."],
+["Racconta un modo di dire italiano buffo e cosa vuol dire.","Share a funny Italian saying and what it means."],
+["Scrivi tre cose che ti hanno fatto sorridere oggi.","Write three things that made you smile today."],
+["Racconta cosa mangerai stasera a cena.","Tell them what you’re having for dinner tonight."],
+["Chiedi un consiglio: un film, un libro o una ricetta del suo Paese.","Ask for a recommendation: a film, a book or a recipe from their country."],
+["Racconta un animale (tuo o del quartiere) e la sua personalità.","Tell them about an animal (yours or a neighbourhood one) and its personality."],
+["Descrivi il suono che senti di più dove vivi.","Describe the sound you hear most where you live."],
+["Racconta un ricordo d’infanzia legato all’estate.","Share a childhood memory from summer."],
+["Chiedi cosa c’è di bello da vedere vicino a casa sua.","Ask what’s worth seeing near where they live."],
+["Racconta un piccolo obiettivo che hai per quest’anno.","Tell them about a small goal you have for this year."],
+["Scrivi una frase gentile che vorresti ricevere anche tu.","Write a kind sentence you’d love to receive yourself."],
+["Racconta il francobollo che hai usato e cosa rappresenta.","Tell them about the stamp you used and what it shows."]
+];
+const ICE_COUNTRY=[
+["Chiedi qual è la cosa che ama di più del {p}.","Ask what they love most about {en}."],
+["Chiedi un piatto del {p} che dovresti assolutamente assaggiare.","Ask which dish from {en} you absolutely have to try."]
+];
+const EN_NAME={"Giappone":"Japan","Germania":"Germany","Stati Uniti":"the United States","Francia":"France","Spagna":"Spain","Gran Bretagna":"the UK",
+  "Paesi Bassi":"the Netherlands","Russia":"Russia","Cina":"China","Taiwan":"Taiwan","Finlandia":"Finland","Brasile":"Brazil","Canada":"Canada",
+  "Australia":"Australia","Nuova Zelanda":"New Zealand","Polonia":"Poland","Ucraina":"Ukraine","Repubblica Ceca":"the Czech Republic","Austria":"Austria",
+  "Belgio":"Belgium","Portogallo":"Portugal","Svezia":"Sweden","Norvegia":"Norway","Danimarca":"Denmark","India":"India","Indonesia":"Indonesia",
+  "Filippine":"the Philippines","Malesia":"Malaysia","Thailandia":"Thailand","Corea del Sud":"South Korea","Messico":"Mexico","Argentina":"Argentina",
+  "Bielorussia":"Belarus","Lituania":"Lithuania","Lettonia":"Latvia","Estonia":"Estonia","Ungheria":"Hungary","Svizzera":"Switzerland","Irlanda":"Ireland",
+  "Grecia":"Greece","Turchia":"Turkey","Singapore":"Singapore","Hong Kong":"Hong Kong","Sud Africa":"South Africa"};
+let iceLast=-1;
+function icePick(){
+  const c=countryObj(),en=c&&EN_NAME[c.name];
+  const pool=ICE.map(x=>x);
+  if(c&&c.zone&&en)ICE_COUNTRY.forEach(([it,e])=>pool.push([it.replace("del {p}",artDel(c.name)),e.replace("{en}",en)]));
+  let i;do{i=Math.floor(Math.random()*pool.length)}while(i===iceLast&&pool.length>1);iceLast=i;return pool[i];
+}
+function artDel(n){ // "del Giappone", "della Francia", "degli Stati Uniti", "dell'Australia"
+  const pl={"Stati Uniti":"degli","Paesi Bassi":"dei","Filippine":"delle","Singapore":"di","Hong Kong":"di","Taiwan":"di"}[n];if(pl)return pl+" "+n;
+  if(/^[AEIOU]/.test(n))return "dell’"+n;
+  const f=/a$/.test(n)&&!["Canada"].includes(n);return (f?"della ":"del ")+n;
+}
+function iceShow(){
+  const [it,en]=icePick();
+  $("ice-it").textContent=it;$("ice-en").textContent=en;
+  const card=$("ice-card");card.classList.remove("flip");void card.offsetWidth;card.classList.add("flip");
+}
+$("ice-btn").onclick=e=>{e.stopPropagation();const pop=$("ice-pop"),open=pop.hidden;pop.hidden=!open;$("ice-btn").setAttribute("aria-expanded",open);if(open)iceShow()};
+$("ice-next").onclick=e=>{e.stopPropagation();iceShow()};
+$("ice-close").onclick=e=>{e.stopPropagation();$("ice-pop").hidden=true;$("ice-btn").setAttribute("aria-expanded","false")};
+$("ice-copy").onclick=async e=>{e.stopPropagation();const t=$("ice-en").textContent;
+  try{await navigator.clipboard.writeText(t);$("ice-copy").textContent="Copiato ✓"}catch(x){$("ice-copy").textContent="Non riesco a copiare"}
+  setTimeout(()=>$("ice-copy").textContent="Copia in inglese",1400)};
+$("ice-pop").onclick=e=>e.stopPropagation();
+document.addEventListener("click",()=>{if(!$("ice-pop").hidden){$("ice-pop").hidden=true;$("ice-btn").setAttribute("aria-expanded","false")}});
+document.addEventListener("keydown",e=>{if(e.key==="Escape"&&!$("ice-pop").hidden){$("ice-pop").hidden=true;$("ice-btn").focus()}});
 </script>
 </body>
 </html>
