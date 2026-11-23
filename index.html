@@ -202,6 +202,15 @@ main>.tabs .tab{padding:8px 18px;font-size:13.5px}
 /* azioni sopra la lista; chip peso selezionata come quella del paese */
 .inv-actions{margin:0 0 4px}
 .letter .weight[aria-pressed="true"]{color:var(--chip);background:color-mix(in srgb,var(--chip) 9%,#fff);border-color:color-mix(in srgb,var(--chip) 45%,#fff)}
+
+/* combinazioni: valore e cifra sulla stessa riga, valore in sans bold */
+.inv-note{font-size:12.5px;color:var(--muted)}
+.inv-actions{justify-content:flex-end;margin:14px 0 0}
+.inv{min-height:44px;padding:6px 0}
+.inv>div:first-child{display:flex;align-items:baseline;gap:10px;flex-wrap:wrap}
+.inv .nm{font-family:var(--sans);font-weight:700;font-size:15px;font-style:normal}
+.inv.on .nm{font-style:normal}
+.inv .sub{font-size:12.5px}
 </style>
 </head>
 <body>
@@ -230,8 +239,9 @@ main>.tabs .tab{padding:8px 18px;font-size:13.5px}
   <section id="view-combinazioni" class="cgrid" hidden>
     <div>
       <div class="target" id="target"></div>
-      <div class="inv-actions"><span>Lire valide se emesse dal 1967.</span><button id="reset">Azzera</button></div>
+      <p class="inv-note">Ricorda: i francobolli in Lire sono validi solo se emessi dal 1967</p>
       <div id="inventory"></div>
+      <div class="inv-actions"><button id="reset">Azzera</button></div>
     </div>
     <div id="combos"></div>
   </section>
