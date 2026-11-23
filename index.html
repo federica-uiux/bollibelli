@@ -5,261 +5,261 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Bollibelli · Calcolatore Francobolli</title>
 <meta name="description" content="Calcola il francobollo giusto per le spedizioni internazionali e trova le combinazioni con i francobolli che hai già. Postamail Internazionale, zone B1, B2, B3.">
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin><link href="https://fonts.googleapis.com/css2?family=Bodoni+Moda:ital,opsz,wght@0,6..96,400..700;1,6..96,400..700&display=swap" rel="stylesheet">
 <style>
 :root{
-  --bg:hsl(180 9% 97%);--fg:hsl(218 29% 18%);--primary:hsl(218 48% 29%);
-  --accent:hsl(9 66% 44%);--border:hsl(180 8% 82%);--input:hsl(180 8% 76%);
-  --card:#fff;--muted:hsl(180 10% 94%);--muted-fg:hsl(215 10% 40%);
-  --secondary:hsl(180 12% 92%);--destructive:hsl(0 65% 43%);--ok:hsl(150 40% 32%);
-  --radius:6px;
-  --serif:Georgia,"Times New Roman",serif;
-  --sans:"Segoe UI","Helvetica Neue",Arial,sans-serif;
-  --mono:SFMono-Regular,Consolas,"Liberation Mono",monospace;
+  --paper:#f7f8fa;--ink:#14213d;--muted:#6b7385;--rule:#c9d6e8;--red:#d33a2c;--card:#fff;--line:#dfe4ec;
+  --display:"Bodoni Moda",Didot,Georgia,serif;--sans:"Segoe UI","Helvetica Neue",Arial,sans-serif;
+  --z0:#2f7d5b;--z1:#2456a6;--z2:#e0553b;--z3:#6b4aa0;
+  --perf:radial-gradient(circle 4px at 5px 5px,#0000 98%,#000) -5px -5px/10px 10px;
 }
 *{box-sizing:border-box;margin:0;padding:0}
-body{background:var(--bg);color:var(--fg);font-family:var(--sans);font-size:15px;line-height:1.5;-webkit-font-smoothing:antialiased}
-a{color:inherit}
-button{font:inherit;color:inherit;background:none;border:0;cursor:pointer}
-.wrap{max-width:1480px;margin:0 auto;padding:0 clamp(18px,3vw,46px)}
+body{background:var(--paper);color:var(--ink);font-family:var(--sans);font-size:15px;line-height:1.5;-webkit-font-smoothing:antialiased}
+a{color:inherit}button{font:inherit;color:inherit;background:none;border:0;cursor:pointer}
+.wrap{max-width:1240px;margin:0 auto;padding:0 clamp(18px,4vw,56px)}
+[hidden]{display:none!important}
 
-/* header */
-header{background:linear-gradient(115deg,#fbfcfc,#f3f6f6);border-bottom:1px solid var(--border)}
-.topbar{display:flex;justify-content:space-between;align-items:center;padding:26px 0 14px;border-bottom:1px solid var(--border);font-size:11px;font-weight:600}
-.topbar .eyebrow{color:var(--primary);letter-spacing:.02em;text-transform:uppercase}
-.topbar .tag{color:var(--fg)}
-.brand{font-family:var(--serif);font-size:clamp(44px,6vw,64px);color:var(--primary);line-height:1.1;margin-top:20px}
-.brand span{color:var(--accent)}
-.subtitle{font-size:19px;font-weight:600;margin-top:10px}
-.credit{font-size:12.5px;color:var(--muted-fg);margin:12px 0 30px}
-.credit svg{color:#c0392b;vertical-align:-1px;margin-right:4px}
-.credit a{color:var(--primary);font-weight:600;text-decoration:none;border-bottom:1px solid var(--border)}
-.credit a:hover{border-color:var(--primary)}
+/* barra */
+.bar{display:flex;align-items:center;justify-content:space-between;padding:22px 0;border-bottom:1px solid var(--ink)}
+.logo{font-family:var(--display);font-size:26px;font-weight:600;letter-spacing:-.01em}
+.logo span{color:var(--red)}
+.tabs{display:flex;gap:4px}
+.tab{padding:7px 14px;border-radius:999px;font-size:13px;font-weight:600;color:var(--muted)}
+.tab svg{display:none}
+.tab[aria-selected="true"]{background:var(--ink);color:#fff}
+.tab:not([aria-selected="true"]):hover{color:var(--ink)}
 
-/* tabs */
-.tabs{display:flex;gap:32px;border-bottom:1px solid var(--border);margin-top:14px}
-.tab{display:flex;align-items:center;gap:7px;padding:12px 0 14px;font-size:14px;font-weight:600;color:var(--muted-fg);border-bottom:2px solid transparent;margin-bottom:-1px}
-.tab[aria-selected="true"]{color:var(--primary);border-color:var(--primary)}
-.tab:hover{color:var(--primary)}
+/* hero: la lettera */
+.grid{display:grid;grid-template-columns:minmax(0,1.35fr) minmax(0,1fr);gap:clamp(32px,6vw,90px);padding:clamp(40px,7vw,88px) 0 clamp(48px,7vw,96px);align-items:center}
+@media (max-width:880px){.grid{grid-template-columns:1fr}}
+.kicker{font-size:12px;font-weight:700;letter-spacing:.16em;text-transform:uppercase;color:var(--red);margin-bottom:18px}
+.letter{font-family:var(--display);font-size:clamp(34px,4.6vw,60px);line-height:1.5;font-weight:400;letter-spacing:-.01em;
+  background:repeating-linear-gradient(to bottom,transparent 0,transparent calc(1.5em - 1px),var(--rule) calc(1.5em - 1px),var(--rule) 1.5em)}
+.letter em{font-style:italic}
+.fill{position:relative;display:inline-block;vertical-align:baseline}
+.combo-btn{font:inherit;font-style:italic;color:var(--red);display:inline-flex;align-items:baseline;gap:.2em;border-bottom:2px solid var(--red);line-height:1.1;padding:0 .05em}
+.combo-btn .ph{white-space:nowrap}
+.combo-btn:not(.has) .ph{color:#9aa6b8}
+.combo-btn .chev{width:.45em;height:.45em;align-self:center;color:var(--red)}
+.weights{display:inline-flex;gap:.35em;vertical-align:baseline}
+.weight{font:inherit;font-style:italic;color:#9aa6b8;line-height:1.1;border-bottom:2px solid transparent}
+.weight[aria-pressed="true"]{color:var(--red);border-color:var(--red)}
+.weight:not([aria-pressed="true"]):hover{color:var(--ink)}
+.weight small{display:none}
+.or{color:#9aa6b8;font-size:.6em;vertical-align:.25em;font-family:var(--sans)}
+.fine{margin-top:22px;font-size:12.5px;color:var(--muted)}
 
-/* layout */
-.grid{display:grid;grid-template-columns:1fr 1fr;gap:52px;padding:32px 0 60px;align-items:start}
-@media (max-width:860px){.grid{grid-template-columns:1fr;gap:32px}}
-.step{display:flex;align-items:center;gap:10px;margin-bottom:16px}
-.step-n{width:20px;height:20px;border:1px solid var(--border);border-radius:50%;display:grid;place-items:center;font-size:10px;color:var(--muted-fg);background:var(--card)}
-.step h3{font-size:16px;font-weight:600}
-.step .aside{margin-left:auto;font-size:11.5px;color:var(--muted-fg)}
-.divider{height:1px;background:var(--border);margin:28px 0}
-.note{display:flex;align-items:center;gap:7px;font-size:11.5px;color:var(--muted-fg);margin-top:14px}
-
-/* combobox */
-.combo{position:relative}
-.combo-btn{width:100%;height:46px;display:flex;align-items:center;gap:10px;padding:0 14px;background:var(--card);border:1px solid var(--input);border-radius:var(--radius);font-weight:500;text-align:left;transition:border-color .15s,background .15s}
-.combo-btn:hover{border-color:var(--primary);background:var(--secondary)}
-.combo-btn.has{border:2px solid var(--primary);box-shadow:0 0 0 2px hsl(218 48% 29% / .12)}
-.combo-btn .ph{flex:1}
-.combo-btn .chev{color:var(--muted-fg)}
-.pop{position:absolute;z-index:30;left:0;right:0;top:calc(100% + 6px);background:var(--card);border:1px solid var(--border);border-radius:var(--radius);box-shadow:0 10px 30px hsl(218 29% 18% / .12);display:none}
+/* combobox popup */
+.pop{position:absolute;z-index:30;left:0;top:calc(100% + 10px);width:min(340px,86vw);font-family:var(--sans);font-size:14px;line-height:1.4;font-style:normal;
+  background:#fff;border:1px solid var(--line);border-radius:12px;box-shadow:0 20px 50px -20px #14213d55;display:none}
 .pop.open{display:block}
-.search{display:flex;align-items:center;gap:8px;padding:0 12px;border-bottom:1px solid var(--border)}
-.search input{flex:1;height:40px;border:0;outline:0;font:inherit;font-size:13px;background:none;color:var(--fg)}
-.list{max-height:300px;overflow:auto;padding:4px}
-.group-label{font-size:10.5px;color:var(--muted-fg);padding:8px 8px 4px}
-.opt{display:flex;justify-content:space-between;align-items:center;padding:6px 14px;font-size:12.5px;border-radius:3px;cursor:pointer}
-.opt.active{background:var(--accent);color:#fff}
-.opt .check{opacity:.8}
-.empty-list{padding:18px;text-align:center;font-size:12.5px;color:var(--muted-fg)}
-.selected-line{display:flex;align-items:center;gap:6px;font-size:12px;color:var(--muted-fg);margin-top:10px}
-.selected-line .dot{width:5px;height:5px;border-radius:50%;background:var(--ok)}
-.selected-line b{color:var(--primary);font-weight:600}
+.search{display:flex;align-items:center;gap:8px;padding:0 12px;border-bottom:1px solid var(--line)}
+.search input{flex:1;height:44px;border:0;outline:0;font:inherit;background:none;color:var(--ink)}
+.list{max-height:300px;overflow:auto;padding:6px}
+.group-label{font-size:11px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:var(--muted);padding:10px 10px 4px}
+.opt{display:flex;justify-content:space-between;padding:7px 10px;border-radius:8px;cursor:pointer}
+.opt.active{background:var(--ink);color:#fff}
+.empty-list{padding:18px;text-align:center;color:var(--muted)}
 
-/* weight */
-.weights{display:grid;grid-template-columns:1fr 1fr;gap:10px}
-.weight{height:64px;background:var(--card);border:1px solid var(--border);border-radius:3px;font-size:12.5px;font-weight:600;transition:all .15s}
-.weight small{display:block;font-weight:400;font-size:10.5px;color:var(--muted-fg)}
-.weight:hover{border-color:var(--primary)}
-.weight[aria-pressed="true"]{background:hsl(220 14% 93%);border-color:var(--primary);color:var(--primary)}
+/* francobollo illustrato */
+.stamp{--c:var(--ink);position:relative;width:100%;aspect-ratio:5/6;padding:12px;background:#fff;
+  -webkit-mask:linear-gradient(#000 0 0) content-box,var(--perf);mask:linear-gradient(#000 0 0) content-box,var(--perf)}
+.stamp-in{position:relative;height:100%;overflow:hidden;background:var(--c)}
+.stamp-in svg{position:absolute;inset:0;width:100%;height:100%}
+.stamp .code{position:absolute;left:10%;top:7%;font-family:var(--display);font-weight:700;color:#fff;font-size:clamp(26px,3.4vw,44px);line-height:1}
+.stamp .cap{position:absolute;right:8%;bottom:6%;font-size:9px;font-weight:700;letter-spacing:.18em;color:#fff;text-transform:uppercase}
+.z0{--c:var(--z0)}.z1{--c:var(--z1)}.z2{--c:var(--z2)}.z3{--c:var(--z3)}
 
-/* result panel */
-.panel{background:var(--card);border:1px solid var(--border);border-radius:3px;overflow:hidden;position:sticky;top:20px}
-.panel.idle{background:hsl(180 9% 91%)}
-.panel.warn{background:hsl(0 45% 96%);border-color:hsl(0 50% 82%)}
-.panel-head{display:flex;justify-content:space-between;align-items:center;padding:26px 26px 0;font-size:11px;font-weight:600;color:var(--muted-fg)}
-.panel-head a{text-decoration:none;display:flex;align-items:center;gap:3px;font-weight:500}
-.panel-head a:hover{color:var(--primary)}
-.idle-body{text-align:center;padding:30px 30px 56px}
-.idle-body h4{font-family:var(--serif);font-weight:400;font-size:20px;margin-top:18px}
-.idle-body p{font-size:12.5px;color:var(--muted-fg);max-width:240px;margin:8px auto 0}
-.res-body{padding:22px 26px 24px}
-.res-top{display:flex;align-items:center;gap:28px}
-.stamp{width:104px;height:128px;padding:7px;flex:none;
-  background:var(--tint-bg);
-  -webkit-mask:linear-gradient(#000 0 0) content-box,radial-gradient(circle 3.2px at 4px 4px,#0000 98%,#000) -4px -4px/8px 8px;
-  mask:linear-gradient(#000 0 0) content-box,radial-gradient(circle 3.2px at 4px 4px,#0000 98%,#000) -4px -4px/8px 8px;
-  filter:drop-shadow(0 2px 3px rgba(0,0,0,.12))}
-.stamp-in{height:100%;border:1px solid var(--tint);display:flex;flex-direction:column;align-items:center;justify-content:space-between;padding:8px 4px 6px;color:var(--tint);background:var(--tint-soft)}
-.stamp-in .pi{font-size:6.5px;font-weight:700;letter-spacing:.04em}
-.stamp-in .code{font-family:var(--serif);font-size:36px;line-height:1}
-.stamp-in .code.small{font-size:24px}
-.stamp-in .svc{font-size:7.5px;border-top:1px solid var(--tint);padding-top:6px;width:44px;text-align:center}
-.val-label{font-size:11.5px;color:var(--muted-fg)}
-.val{font-family:var(--serif);font-size:42px;color:var(--primary);line-height:1.15}
-.val-name{font-size:12.5px;font-weight:600;margin-top:2px}
-.rows{margin-top:22px}
-.row{display:flex;justify-content:space-between;padding:10px 0;border-top:1px solid var(--border);font-size:12.5px}
-.row span:first-child{color:var(--muted-fg)}
-.row span:last-child{font-weight:600}
-.panel-foot{display:flex;align-items:center;gap:8px;padding:14px 26px;border-top:1px solid var(--border);background:var(--card);font-size:11.5px}
-.panel.result{background:var(--tint-panel)}
+#result{display:flex;flex-direction:column;align-items:center}
+.res{display:grid;justify-items:center;text-align:center;width:min(360px,100%)}
+.res .holder{width:min(280px,78%);transform:rotate(3deg);filter:drop-shadow(0 18px 28px #14213d2e)}
+.res .price{font-family:var(--display);font-size:clamp(56px,7vw,88px);line-height:1;margin-top:28px;letter-spacing:-.02em}
+.res .what{margin-top:10px;font-size:14px;color:var(--muted)}
+.res .what b{color:var(--ink)}
+.res .src{margin-top:16px;font-size:12px;color:var(--muted);text-decoration:none;border-bottom:1px solid var(--line)}
+.ghost{width:min(280px,78%);aspect-ratio:5/6;border:2px dashed #c3ccda;border-radius:4px;display:grid;place-items:center;transform:rotate(3deg);
+  font-family:var(--display);font-style:italic;font-size:30px;color:#9aa6b8;text-align:center;padding:24px}
 
-/* zone tints */
-.z0{--tint:hsl(150 40% 30%);--tint-bg:hsl(150 30% 88%);--tint-soft:hsl(150 30% 94%);--tint-panel:hsl(150 20% 97%)}
-.z1{--tint:hsl(218 48% 32%);--tint-bg:hsl(218 40% 88%);--tint-soft:hsl(218 40% 94%);--tint-panel:hsl(218 30% 97.5%)}
-.z2{--tint:hsl(9 66% 40%);--tint-bg:hsl(9 55% 89%);--tint-soft:hsl(9 55% 93%);--tint-panel:hsl(9 35% 96.5%)}
-.z3{--tint:hsl(265 35% 38%);--tint-bg:hsl(265 30% 89%);--tint-soft:hsl(265 30% 94%);--tint-panel:hsl(265 25% 97.5%)}
+/* zone */
+.zones{padding:56px 0 72px;border-top:1px solid var(--ink)}
+.zones h2{font-family:var(--display);font-weight:400;font-size:clamp(30px,3.6vw,46px);letter-spacing:-.01em;margin-bottom:30px}
+.zones h2 em{color:var(--red)}
+.zone-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:clamp(16px,3vw,40px)}
+@media (max-width:880px){.zone-grid{grid-template-columns:1fr 1fr}}
+.zone .stamp{width:72%;filter:drop-shadow(0 8px 14px #14213d22);transition:transform .2s}
+.zone:nth-child(odd) .stamp{transform:rotate(-2deg)}.zone:nth-child(even) .stamp{transform:rotate(2deg)}
+.zone:hover .stamp{transform:rotate(0) translateY(-3px)}
+.zone b{display:block;margin-top:16px;font-family:var(--display);font-size:20px;font-weight:600}
+.zone p{font-size:13px;color:var(--muted);margin-top:2px}
+
+footer{border-top:1px solid var(--ink);padding:20px 0 32px;font-size:12.5px;color:var(--muted)}
+footer .wrap{display:flex;justify-content:space-between;gap:12px;flex-wrap:wrap}
+footer a{color:var(--ink);text-decoration:none;font-weight:600}
+footer .heart{color:var(--red)}
 
 /* combinazioni */
-.target{display:flex;justify-content:space-between;align-items:flex-end;padding:16px 0;border-top:1px solid var(--border);border-bottom:1px solid var(--border);margin-top:22px}
-.target small{display:block;font-size:11px;color:var(--muted-fg)}
-.target b{font-size:13px}
-.target .amt{font-family:var(--serif);font-size:26px;color:var(--primary)}
-.target .amt.none{font-size:13px;font-family:var(--sans);color:var(--muted-fg)}
-.target button.linkish{font-size:12px;color:var(--primary);text-decoration:underline;text-underline-offset:3px}
-.inv-group{font-size:10.5px;font-weight:600;letter-spacing:.04em;text-transform:uppercase;color:var(--muted-fg);padding:20px 4px 6px}
-.inv{display:flex;justify-content:space-between;align-items:center;padding:8px 4px;border-bottom:1px solid var(--border);min-height:52px}
-.inv .nm{font-size:12.5px;font-weight:600}
-.inv.on .nm{color:var(--primary)}
-.inv .sub{font-size:10.5px;color:var(--muted-fg)}
-.stepper{display:flex;align-items:center;border:1px solid var(--input);border-radius:var(--radius);background:var(--card);height:32px}
-.stepper button{width:30px;height:100%;display:grid;place-items:center;color:var(--fg)}
-.stepper button:disabled{color:var(--input);cursor:default}
-.stepper button:not(:disabled):hover{background:var(--secondary)}
-.stepper input{width:30px;text-align:center;border:0;outline:0;font-family:var(--mono);font-size:12px;background:none;color:var(--fg);-moz-appearance:textfield}
+.cgrid{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:clamp(32px,6vw,90px);padding:clamp(40px,6vw,72px) 0 72px;align-items:start}
+@media (max-width:880px){.cgrid{grid-template-columns:1fr}}
+.target{font-family:var(--display);font-size:clamp(30px,3.6vw,46px);line-height:1.5;margin-bottom:26px;
+  background:repeating-linear-gradient(to bottom,transparent 0,transparent calc(1.5em - 1px),var(--rule) calc(1.5em - 1px),var(--rule) 1.5em)}
+.target .amt{color:var(--red);font-style:italic}
+.target button.linkish{font:inherit;font-style:italic;color:var(--red);border-bottom:2px solid var(--red);line-height:1.1}
+.inv-group{font-size:11px;font-weight:700;letter-spacing:.14em;text-transform:uppercase;color:var(--red);padding:22px 0 6px}
+.inv{display:flex;justify-content:space-between;align-items:center;padding:8px 0;border-bottom:1px solid var(--rule);min-height:48px}
+.inv .nm{font-family:var(--display);font-size:18px}
+.inv.on .nm{color:var(--red);font-style:italic}
+.inv .sub{font-size:11.5px;color:var(--muted)}
+.stepper{display:flex;align-items:center;gap:2px}
+.stepper button{width:30px;height:30px;border-radius:50%;display:grid;place-items:center;border:1px solid var(--line);background:#fff}
+.stepper button:disabled{opacity:.35;cursor:default}
+.stepper input{width:32px;text-align:center;border:0;outline:0;font:600 14px var(--sans);background:none;color:var(--ink);-moz-appearance:textfield}
 .stepper input::-webkit-inner-spin-button{-webkit-appearance:none}
-.inv-actions{display:flex;justify-content:flex-end;margin-top:14px}
-.inv-actions button{font-size:12px;color:var(--muted-fg);text-decoration:underline;text-underline-offset:3px}
-.inv-actions button:hover{color:var(--destructive)}
-.combos-head{display:flex;align-items:center;gap:10px;margin-bottom:14px}
-.combos-head h3{font-size:16px;font-weight:600}
-.combos-head .count{margin-left:auto;font-size:11px;color:var(--muted-fg)}
-.combo-card{background:var(--card);border:1px solid var(--border);border-radius:3px;padding:16px;margin-bottom:12px}
-.combo-card.best{background:hsl(180 12% 92%);border-color:hsl(180 10% 70%)}
-.combo-card .hd{display:flex;justify-content:space-between;gap:12px;padding-bottom:14px;border-bottom:1px solid var(--border)}
-.badge{display:flex;align-items:center;gap:5px;font-size:11px;font-weight:600;color:var(--ok);margin-bottom:4px}
-.combo-card .n{font-size:13px;font-weight:600}
-.combo-card .tot{font-family:var(--serif);font-size:21px;color:var(--primary);text-align:right;line-height:1.2}
-.combo-card .extra{font-size:10.5px;color:var(--muted-fg);text-align:right}
-.combo-card .extra.exact{color:var(--ok);font-weight:600}
-.chips{display:flex;flex-wrap:wrap;gap:7px;padding-top:14px}
-.chip{font-size:11px;padding:4px 7px;background:hsl(180 10% 90%);border-radius:2px}
-.combo-card.best .chip{background:hsl(180 10% 86%)}
+.inv-actions{display:flex;justify-content:space-between;align-items:center;margin-top:16px;font-size:12px;color:var(--muted)}
+.inv-actions button{text-decoration:underline;text-underline-offset:3px}
+.combos-head{display:flex;align-items:baseline;gap:10px;margin-bottom:18px}
+.combos-head h3{font-family:var(--display);font-weight:400;font-size:30px}
+.combos-head .count{font-size:12px;color:var(--muted)}
+.combos-head .step-n{display:none}
+.combo-card{padding:18px 0;border-top:1px solid var(--rule)}
+.combo-card .hd{display:flex;justify-content:space-between;gap:12px;align-items:baseline}
+.badge{display:inline-block;font-size:10.5px;font-weight:700;letter-spacing:.14em;text-transform:uppercase;color:#fff;background:var(--red);padding:2px 8px;border-radius:999px;margin-bottom:6px}
+.badge svg{display:none}
+.combo-card .n{font-family:var(--display);font-size:20px}
+.combo-card .tot{font-family:var(--display);font-size:24px;text-align:right}
+.combo-card .extra{font-size:11.5px;color:var(--muted);text-align:right}
+.combo-card .extra.exact{color:var(--z0);font-weight:600}
+.chips{display:flex;flex-wrap:wrap;gap:6px;margin-top:10px}
+.chip{font-size:12px;padding:4px 10px;border-radius:999px;background:#fff;border:1px solid var(--line)}
+.panel{text-align:center;padding:30px 0}
+.panel-head{display:none}
+.idle-body h4{font-family:var(--display);font-style:italic;font-weight:400;font-size:32px;margin-top:14px}
+.idle-body p{font-size:13px;color:var(--muted);max-width:280px;margin:8px auto 0}
+.panel.warn h4{color:var(--red)}
+.letter{font-size:clamp(30px,3.7vw,50px)}
+.weights{display:inline}
+.weight{white-space:nowrap}
+.selected-line{display:none!important}
+.stamp{filter:drop-shadow(0 0 1px #14213d40)}
+.res .holder .stamp,.zone .stamp{filter:none}
+.or{margin:0 .35em}
+.target .amt{white-space:nowrap}
+.tab{white-space:nowrap}
+@media (max-width:600px){.res .holder,.ghost{width:min(220px,64%)}.tab{padding:6px 11px;font-size:12px}.logo{font-size:22px}}
+/* contrasto */
+:root{--muted:#4f596b;--red:#b8332a;--soft:#5a6578;--z2:#c4472e}
+.combo-btn:not(.has) .ph,.weight,.or{color:var(--soft)}
+.weight:not([aria-pressed="true"]){border-bottom:2px dotted #8d98ab}
+.ghost{border-color:#8d98ab;color:var(--soft)}
+.stamp .code,.stamp .cap{text-shadow:0 1px 3px #0006}
+.inv .nm,.combo-card .n,.zone b{font-weight:500}
+.inv .sub,.combo-card .extra,.idle-body p,.res .what,.res .src,footer{color:var(--muted)}
+.stamp .cap{background:#14213dcc;padding:3px 6px;border-radius:2px;text-shadow:none}
+/* chip cliccabili nella frase */
+.combo-btn,.weight{font-size:.78em;line-height:1.25;padding:.06em .5em .1em;border-radius:999px;border:1.5px solid currentColor;vertical-align:.08em;transition:background .15s,color .15s,border-color .15s}
+.combo-btn{color:var(--red);background:color-mix(in srgb,var(--red) 8%,#fff);border-color:color-mix(in srgb,var(--red) 45%,#fff);gap:.25em}
+.combo-btn:hover,.combo-btn[aria-expanded="true"]{background:color-mix(in srgb,var(--red) 15%,#fff);border-color:var(--red)}
+.combo-btn:not(.has){color:var(--soft);background:#fff;border-color:#8d98ab;border-style:dashed}
+.combo-btn .chev{width:.5em;height:.5em}
+.weight{color:var(--soft);background:#fff;border-color:#c3ccda}
+.weight:not([aria-pressed="true"]){border-bottom:1.5px solid #c3ccda}
+.weight:not([aria-pressed="true"]):hover{border-color:var(--ink);color:var(--ink)}
+.weight[aria-pressed="true"]{color:#fff;background:var(--red);border-color:var(--red)}
+.or{margin:0 .25em}
 
-/* zones */
-.zones{padding:10px 0 46px}
-.zones-head{display:flex;justify-content:space-between;align-items:baseline;margin-bottom:16px}
-.zones-head h2{font-family:var(--serif);font-weight:400;font-size:clamp(24px,3vw,30px)}
-.zones-head span{font-size:11px;color:var(--muted-fg)}
-.zone-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:26px}
-@media (max-width:860px){.zone-grid{grid-template-columns:1fr 1fr}}
-@media (max-width:480px){.zone-grid{grid-template-columns:1fr}}
-.zone{border-top:1px solid var(--border);padding-top:12px;display:grid;grid-template-columns:26px 1fr;column-gap:0}
-.zone .k{font-family:var(--mono);font-size:11.5px;color:var(--tint)}
-.zone b{font-size:12.5px;font-weight:600}
-.zone p{grid-column:2;font-size:11px;color:var(--muted-fg);margin-top:4px}
-footer{border-top:1px solid var(--border);padding:22px 0 30px}
-footer .wrap{display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:10px}
-footer .fb{font-family:var(--serif);font-size:16px;color:var(--primary)}
-footer .meta{font-size:11px;color:var(--muted-fg);display:flex;gap:16px;align-items:center}
-footer .meta a{color:var(--fg);text-decoration:none;font-weight:500}
-footer .meta a:hover{color:var(--primary)}
-[hidden]{display:none!important}
+/* tab sopra il titolo */
+main>.tabs{margin-top:clamp(32px,5vw,56px);display:inline-flex;padding:4px;border:1px solid var(--line);border-radius:999px;background:#fff}
+main>.tabs .tab{padding:8px 18px;font-size:13.5px}
+.grid,.cgrid{padding-top:clamp(28px,4vw,48px)}
+#view-trova>div:first-child{align-self:start;padding-top:clamp(8px,3vw,40px)}
+
+/* chip nel colore della zona */
+.letter{--chip:var(--c,var(--red))}
+.letter .combo-btn.has{color:var(--chip);background:color-mix(in srgb,var(--chip) 9%,#fff);border-color:color-mix(in srgb,var(--chip) 45%,#fff)}
+.letter .combo-btn.has:hover,.letter .combo-btn.has[aria-expanded="true"]{background:color-mix(in srgb,var(--chip) 16%,#fff);border-color:var(--chip)}
+.letter .combo-btn .chev{color:currentColor}
+.letter .weight[aria-pressed="true"]{background:var(--chip);border-color:var(--chip)}
+
+/* richieste: occhiello blu notte, chip in sans */
+.kicker{color:var(--ink)}
+.letter .combo-btn,.letter .weight{font-family:var(--sans);font-style:normal;font-weight:600;font-size:.5em;letter-spacing:0;padding:.3em .85em .32em;vertical-align:.3em}
+.letter .combo-btn .ph{font-style:normal}
+.letter .combo-btn .chev{width:.85em;height:.85em}
+.letter .weights{white-space:nowrap}
+
+/* combinazioni nel colore della zona */
+.cgrid.z0,.cgrid.z1,.cgrid.z2,.cgrid.z3{--red:var(--c)}
+@media (max-width:379px){.letter .weights{white-space:normal}}
+
+/* combinazioni in card */
+.combo-card{background:#fdfdfb;border:1px solid #e1e5ec;border-radius:14px;padding:18px 20px;margin-bottom:12px;box-shadow:0 1px 2px #14213d0d}
+.combo-card.best{border:1.5px solid var(--red);box-shadow:0 10px 24px -16px color-mix(in srgb,var(--red) 60%,transparent)}
+.combos-head{padding-bottom:4px}
+
+/* fucsia per puntino e cuore; "quattro" come il resto */
+.logo span,footer .heart{color:#c2185b}
+.zones h2 em{color:inherit;font-style:normal}
 </style>
 </head>
 <body>
-<header>
-  <div class="wrap">
-    <div class="topbar"><span class="eyebrow">Italia · Mondo</span><span class="tag">Una lettera, tanti chilometri.</span></div>
-    <p class="brand">Bollibelli<span>.</span></p>
-    <h1 class="subtitle">Calcolatore Francobolli</h1>
-    <p class="credit">
-      <svg width="12" height="12" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 21s-7.5-4.6-10-9.3C.4 8.4 2.3 4 6.3 4c2.2 0 3.7 1.3 4.7 2.8l1 1.4 1-1.4C14 5.3 15.5 4 17.7 4c4 0 5.9 4.4 4.3 7.7C19.5 16.4 12 21 12 21z"/></svg>
-      Fatto con amore da Federica Cutrera –
-      <a href="https://www.postcrossing.com/user/spleenyeffe" target="_blank" rel="noopener">Spleenyeffe</a> on Postcrossing
-    </p>
+<header class="wrap">
+  <div class="bar">
+    <span class="logo">Bollibelli<span>.</span></span>
   </div>
 </header>
 
 <main class="wrap">
   <nav class="tabs" role="tablist">
-    <button class="tab" role="tab" id="tab-trova" aria-selected="true" data-view="trova">
-      <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 10c0 6-8 12-8 12S4 16 4 10a8 8 0 0 1 16 0z"/><circle cx="12" cy="10" r="3"/></svg>
-      Trova Francobollo</button>
-    <button class="tab" role="tab" id="tab-comb" aria-selected="false" data-view="combinazioni">
-      <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="m12 2 10 5-10 5L2 7z"/><path d="m2 17 10 5 10-5"/><path d="m2 12 10 5 10-5"/></svg>
-      Combinazioni</button>
-  </nav>
-
-  <!-- TROVA -->
+      <button class="tab" role="tab" id="tab-trova" aria-selected="true" data-view="trova">Trova</button>
+      <button class="tab" role="tab" id="tab-comb" aria-selected="false" data-view="combinazioni">Combinazioni</button>
+    </nav>
   <section id="view-trova" class="grid">
     <div>
-      <div class="step"><span class="step-n">1</span><h3>Paese di destinazione</h3></div>
-      <div class="combo" id="combo">
-        <button class="combo-btn" id="combo-btn" aria-haspopup="listbox" aria-expanded="false">
-          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="12" cy="12" r="10"/><path d="M2 12h20M12 2a15 15 0 0 1 0 20M12 2a15 15 0 0 0 0 20"/></svg>
-          <span class="ph" id="combo-label">Seleziona un paese...</span>
-          <svg class="chev" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="m7 15 5 5 5-5M7 9l5-5 5 5"/></svg>
-        </button>
-        <div class="pop" id="pop">
-          <div class="search">
-            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="color:var(--muted-fg)"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.5-3.5"/></svg>
-            <input id="search" placeholder="Cerca un paese..." autocomplete="off">
-          </div>
-          <div class="list" id="list" role="listbox"></div>
-        </div>
-      </div>
-      <p class="selected-line" id="sel-line" hidden><span class="dot"></span><span id="sel-name"></span> · <b id="sel-zone"></b></p>
-
-      <div id="weight-block" hidden>
-        <div class="divider"></div>
-        <div class="step"><span class="step-n">2</span><h3>Peso della lettera</h3><span class="aside">Posta ordinaria</span></div>
-        <div class="weights" id="weights"></div>
-        <p class="note"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M12 16v-4M12 8h.01"/></svg>Posta1/Priority è stata dismessa da Poste il 01/05/2026</p>
-      </div>
+      <p class="kicker">Calcolatore francobolli</p>
+      <p class="letter">Spedisco una lettera in
+        <span class="fill combo" id="combo"><button class="combo-btn" id="combo-btn" aria-haspopup="listbox" aria-expanded="false"><span class="ph" id="combo-label">…dove?</span><svg class="chev" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><path d="m6 9 6 6 6-6"/></svg></button>
+          <span class="pop" id="pop"><span class="search"><input id="search" placeholder="Cerca un paese" autocomplete="off"></span><span class="list" id="list" role="listbox" style="display:block"></span></span></span><span id="weight-block"> che pesa <span class="weights" id="weights"></span>.</span></p>
+      <p class="selected-line" id="sel-line" hidden><span id="sel-name"></span><span id="sel-zone"></span></p>
     </div>
     <div id="result"></div>
   </section>
 
-  <!-- COMBINAZIONI -->
-  <section id="view-combinazioni" class="grid" hidden>
+  <section id="view-combinazioni" class="cgrid" hidden>
     <div>
-      <div class="step"><span class="step-n">1</span><h3>Francobolli disponibili</h3></div>
-      <p class="note" style="margin-top:0"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M12 16v-4M12 8h.01"/></svg>Ricorda: i francobolli in lire sono validi se emessi dal 1967 in poi.</p>
       <div class="target" id="target"></div>
       <div id="inventory"></div>
-      <div class="inv-actions"><button id="reset">Azzera tutto</button></div>
+      <div class="inv-actions"><span>Lire valide se emesse dal 1967.</span><button id="reset">Azzera</button></div>
     </div>
     <div id="combos"></div>
   </section>
 
   <section class="zones">
-    <div class="zones-head"><h2>Il mondo, in quattro zone.</h2><span>Zone tariffarie</span></div>
+    <h2>Il mondo, in <em>quattro</em> francobolli.</h2>
     <div class="zone-grid">
-      <div class="zone z0"><span class="k">IT</span><b>Italia</b><p>Spedizioni nazionali</p></div>
-      <div class="zone z1"><span class="k">01</span><b>Europa e Mediterraneo</b><p>Francia, Germania, Spagna, Regno Unito, Marocco…</p></div>
-      <div class="zone z2"><span class="k">02</span><b>Africa, Americhe, Asia</b><p>USA, Canada, Brasile, Giappone, Cina, India…</p></div>
-      <div class="zone z3"><span class="k">03</span><b>Oceania</b><p>Australia, Nuova Zelanda, Fiji, Papua Nuova Guinea…</p></div>
+      <div class="zone"><div class="stamp z0" data-art="0"></div><b>Italia</b><p>Posta nazionale</p></div>
+      <div class="zone"><div class="stamp z1" data-art="1"></div><b>Zona 1</b><p>Europa e Mediterraneo</p></div>
+      <div class="zone"><div class="stamp z2" data-art="2"></div><b>Zona 2</b><p>Africa, Americhe, Asia</p></div>
+      <div class="zone"><div class="stamp z3" data-art="3"></div><b>Zona 3</b><p>Oceania</p></div>
     </div>
   </section>
 </main>
 
 <footer>
   <div class="wrap">
-    <span class="fb">Bollibelli.</span>
-    <span class="meta">Tariffe aggiornate al 30/04/2026
-      <a href="https://www.poste.it/lettera/postamail-internazionale/zone-tariffarie-di-postamail-internazionale" target="_blank" rel="noopener">Poste Italiane ↗</a></span>
+    <span>Fatto con <span class="heart">♥</span> da <a href="https://www.postcrossing.com/user/spleenyeffe" target="_blank" rel="noopener">Spleenyeffe</a></span>
+    <span>Tariffe al 30/04/2026 · <a href="https://www.poste.it/lettera/postamail-internazionale/zone-tariffarie-di-postamail-internazionale" target="_blank" rel="noopener">Poste Italiane ↗</a></span>
   </div>
 </footer>
 
 <script>
+const ART=[
+'<svg viewBox="0 0 100 120" preserveAspectRatio="xMidYMid slice"><circle cx="72" cy="36" r="24" fill="#ffffff1f"/><path d="M0 120 Q40 72 100 80 V120Z" fill="#ffffff17"/><path d="M14 28 Q48 46 60 100" stroke="#173f2d" stroke-width="2.5" fill="none"/><path d="M28 40 q16-16 26 4 q-16 9-26-4z" fill="#9fd4b4"/><path d="M50 60 q20-4 20 15 q-18 2-20-15z" fill="#9fd4b4"/><ellipse cx="40" cy="72" rx="14" ry="11" transform="rotate(-25 40 72)" fill="#f6cf3f"/><ellipse cx="64" cy="94" rx="13" ry="10" transform="rotate(20 64 94)" fill="#f6cf3f"/></svg>',
+'<svg viewBox="0 0 100 120" preserveAspectRatio="xMidYMid slice"><circle cx="72" cy="36" r="12" fill="#ffd36b"/><path d="M47 34 V84 H22Z" fill="#fff"/><path d="M52 44 V84 H72Z" fill="#ffffffbb"/><path d="M18 88 H80 L71 98 H28Z" fill="#d33a2c"/><path d="M0 104 q10-6 20 0 t20 0 20 0 20 0 20 0 V120 H0Z" fill="#ffffff33"/><path d="M0 112 q10-6 20 0 t20 0 20 0 20 0 20 0 V120 H0Z" fill="#ffffff55"/></svg>',
+'<svg viewBox="0 0 100 120" preserveAspectRatio="xMidYMid slice"><circle cx="54" cy="58" r="28" fill="#ffd36b"/><path d="M-5 120 L30 66 L50 94 L70 70 L105 120Z" fill="#7a2416"/><path d="M30 66 L38 78 L31 75 L23 78Z" fill="#fff"/><path d="M70 70 L77 80 L70 78 L64 80Z" fill="#fff"/><path d="M60 26 h16 M66 20 h20 M10 44 h12" stroke="#ffffff88" stroke-width="2.5" stroke-linecap="round"/></svg>',
+'<svg viewBox="0 0 100 120" preserveAspectRatio="xMidYMid slice"><circle cx="74" cy="34" r="11" fill="#ffd36b"/><path d="M0 120 V82 Q22 52 50 60 Q74 66 66 86 Q60 72 49 78 Q42 94 62 100 Q86 106 100 88 V120Z" fill="#fff"/><path d="M0 120 V100 Q30 88 60 106 Q80 116 100 106 V120Z" fill="#c8b6ea"/></svg>'];
+const CODES=["B","B1","B2","B3"];
+const stampHTML=(z,code,cap)=>`<div class="stamp-in">${ART[z]}<span class="code">${code}</span><span class="cap">${cap}</span></div>`;
+document.querySelectorAll("[data-art]").forEach(el=>{const z=+el.dataset.art;el.innerHTML=stampHTML(z,CODES[z],"Italia")});
+
 /* ---------- DATI ---------- */
 // value in centesimi per evitare errori di arrotondamento
 const STAMPS = [
@@ -384,30 +384,23 @@ document.addEventListener("click",e=>{if(!$("combo").contains(e.target))closePop
 /* render: trova */
 function renderTrova(){
   const c=countryObj();
-  $("combo-label").textContent=c?c.name:"Seleziona un paese...";
+  document.querySelector(".letter").className="letter"+(c?" z"+c.zone:"");
+  $("combo-label").textContent=c?c.name:"…dove?";
   $("combo-btn").classList.toggle("has",!!c);
   $("sel-line").hidden=!c;$("weight-block").hidden=!c;
   const r=$("result");
   if(!c){
-    r.innerHTML=`<div class="panel idle"><div class="panel-head"><span>La tua affrancatura</span><a href="${POSTE_URL}" target="_blank" rel="noopener" aria-label="Zone tariffarie Poste">${ICON.arrow}</a></div>
-      <div class="idle-body">${ICON.env}<h4>Dove va la tua lettera?</h4><p>Seleziona un paese per vedere il francobollo richiesto.</p></div></div>`;
+    r.innerHTML=`<div class="res"><div class="ghost">Il tuo francobollo apparirà qui</div></div>`;
     return;
   }
   $("sel-name").textContent=c.name;$("sel-zone").textContent=ZONE_SHORT(c.zone);
-  $("weights").innerHTML=weightOptions(c.zone).map(o=>`<button class="weight" aria-pressed="${state.weight===o.value}" data-w="${o.value}">${o.description}<small>${o.label}</small></button>`).join("");
+  $("weights").innerHTML=weightOptions(c.zone).map(o=>`<button class="weight" aria-pressed="${state.weight===o.value}" data-w="${o.value}">${o.value==="standard"?"fino a 20 g":"oltre 20 g fino a 50 g"}</button>`).join('<span class="or">o</span>');
   const s=requiredStamp(c.zone,state.weight);
   const big=s.code.replace("-50g","");
-  r.innerHTML=`<div class="panel result z${c.zone}">
-    <div class="panel-head"><span style="color:var(--primary)">Francobollo richiesto</span><a href="${POSTE_URL}" target="_blank" rel="noopener">${ZONE_SHORT(c.zone)} ${ICON.arrow}</a></div>
-    <div class="res-body">
-      <div class="res-top">
-        <div class="stamp"><div class="stamp-in"><span class="pi">POSTE ITALIANE</span><span class="code${big.length>2?' small':''}">${big}</span><span class="svc">${s.service}${s.code.endsWith("50g")?" · 50g":""}</span></div></div>
-        <div><div class="val-label">Valore dell'affrancatura</div><div class="val">${euro(s.cents)}</div><div class="val-name">${s.name}</div></div>
-      </div>
-      <div class="rows"><div class="row"><span>Servizio</span><span>${s.service}</span></div><div class="row"><span>Peso massimo</span><span>${s.weight}</span></div></div>
-    </div>
-    <div class="panel-foot">${ICON.info}${c.zone===0?"Posta4 nazionale":"Postamail Internazionale"} ${s.weight}</div>
-  </div>`;
+  r.innerHTML=`<div class="res"><div class="holder"><div class="stamp z${c.zone}">${stampHTML(c.zone,big,s.service+(s.code.endsWith("50g")?" · 50g":""))}</div></div>
+    <div class="price">${euro(s.cents)}</div>
+    <p class="what"><b>${s.name}</b> · ${s.service} ${s.weight}</p>
+    <a class="src" href="${POSTE_URL}" target="_blank" rel="noopener">Verifica su Poste ↗</a></div>`;
 }
 $("weights").onclick=e=>{const b=e.target.closest(".weight");if(b){state.weight=b.dataset.w;save();renderAll()}};
 
@@ -428,18 +421,19 @@ $("reset").onclick=()=>{state.inv={};save();renderInventory();renderCombos()};
 
 function renderCombos(){
   const c=countryObj();
+  $("view-combinazioni").className="cgrid"+(c?" z"+c.zone:"");
   const t=$("target");
   if(!c){
-    t.innerHTML=`<div><small>Valore da raggiungere</small><button class="linkish" data-go="trova">Scegli prima un paese</button></div><span class="amt none">—</span>`;
+    t.innerHTML=`Prima, <button class="linkish" data-go="trova">scegli un paese</button>.`;
   }else{
     const s=requiredStamp(c.zone,state.weight);
-    t.innerHTML=`<div><small>Valore da raggiungere</small><b>${esc(c.name)}</b>${state.weight==="heavy"?' <span class="sub" style="font-size:11px;color:var(--muted-fg)">· oltre 20g</span>':""}</div><span class="amt">${euro(s.cents)}</span>`;
+    t.innerHTML=`${esc(c.name)}: servono <span class="amt">${euro(s.cents)}</span>.`;
   }
   const box=$("combos");
   const hasInv=Object.keys(state.inv).length>0;
   const idle=(cls,title,text,icon)=>`<div class="panel ${cls}"><div class="panel-head"><span>${cls==="warn"?"Affrancatura incompleta":"La tua affrancatura"}</span>${icon}</div><div class="idle-body">${ICON.env}<h4>${title}</h4><p>${text}</p></div></div>`;
-  if(!c){box.innerHTML=idle("idle","Dove va la tua lettera?","Scegli un paese nella scheda Trova Francobollo per sapere quanto affrancare.",ICON.arrow);return}
-  if(!hasInv){box.innerHTML=idle("idle","Ogni francobollo conta.","Indica i francobolli disponibili per trovare le combinazioni possibili.",ICON.arrow);return}
+  if(!c){box.innerHTML=idle("idle","Dove va la tua lettera?","Scegli prima un paese.",ICON.arrow);return}
+  if(!hasInv){box.innerHTML=idle("idle","Ogni francobollo conta.","Dicci quali hai: troviamo noi le combinazioni.",ICON.arrow);return}
   const target=requiredStamp(c.zone,state.weight).cents;
   const combos=findCombinations(target,state.inv);
   if(!combos.length){
