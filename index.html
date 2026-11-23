@@ -271,6 +271,28 @@ details.manual summary:hover .chev{border-color:var(--ink)}
 /* badge della combinazione più economica */
 .badge.cheap{background:var(--z0)}
 .combo-card.cheap{border:1.5px solid var(--z0)}
+
+/* ===== Tocchi graziosi (prototipo) ===== */
+.stamp-in .season{position:absolute;inset:0;width:100%;height:100%;pointer-events:none}
+.res .holder{position:relative}
+.pm-wrap{position:absolute;right:-40%;top:56%;width:74%;color:#14213d;opacity:0;pointer-events:none;mix-blend-mode:multiply;
+  transform:scale(1.7) rotate(-16deg);animation:pm .42s .3s cubic-bezier(.2,.9,.3,1.25) forwards}
+.pm-wrap svg{display:block;width:100%;height:auto}
+@keyframes pm{0%{opacity:0;transform:scale(1.7) rotate(-16deg)}70%{opacity:.85}100%{opacity:.55;transform:scale(1) rotate(-9deg)}}
+.res .holder.thump .stamp{animation:thump .28s .6s ease-out}
+@keyframes thump{50%{transform:scale(.965)}}
+@media (prefers-reduced-motion:reduce){.pm-wrap{animation:none;opacity:.7;transform:rotate(-9deg)}.res .holder.thump .stamp{animation:none}}
+.greet{margin-top:18px;width:min(360px,100%);background:#fff;border:1px solid var(--line);border-radius:14px;padding:12px 16px;text-align:left;
+  animation:greetIn .4s .8s both}
+@keyframes greetIn{from{opacity:0;transform:translateY(6px)}}
+.greet-k{display:block;font:700 10.5px var(--sans);letter-spacing:.12em;text-transform:uppercase;color:var(--muted);margin-bottom:6px}
+.greet-row{display:flex;align-items:baseline;gap:10px;padding:3px 0;font-size:16px}
+.greet-row>span{width:52px;flex:none;font-size:12.5px;color:var(--muted)}
+.greet-row b{font-weight:600}
+.greet-row i{font-style:normal;color:var(--muted);font-size:13.5px}
+
+#result{overflow-x:clip}
+@media (max-width:600px){.pm-wrap{right:-24%;width:62%}}
 </style>
 </head>
 <body>
@@ -341,7 +363,7 @@ const ART=[
 '<svg viewBox="0 0 100 120" preserveAspectRatio="xMidYMid slice"><circle cx="54" cy="58" r="28" fill="#ffd36b"/><path d="M-5 120 L30 66 L50 94 L70 70 L105 120Z" fill="#7a2416"/><path d="M30 66 L38 78 L31 75 L23 78Z" fill="#fff"/><path d="M70 70 L77 80 L70 78 L64 80Z" fill="#fff"/><path d="M60 26 h16 M66 20 h20 M10 44 h12" stroke="#ffffff88" stroke-width="2.5" stroke-linecap="round"/></svg>',
 '<svg viewBox="0 0 100 120" preserveAspectRatio="xMidYMid slice"><circle cx="74" cy="34" r="11" fill="#ffd36b"/><path d="M0 120 V82 Q22 52 50 60 Q74 66 66 86 Q60 72 49 78 Q42 94 62 100 Q86 106 100 88 V120Z" fill="#fff"/><path d="M0 120 V100 Q30 88 60 106 Q80 116 100 106 V120Z" fill="#c8b6ea"/></svg>'];
 const CODES=["B","B1","B2","B3"];
-const stampHTML=(z,code,cap)=>`<div class="stamp-in">${ART[z]}<span class="code">${code}</span>${cap?`<span class="cap">${cap}</span>`:""}</div>`;
+const stampHTML=(z,code,cap)=>`<div class="stamp-in">${ART[z]}${window.__season?seasonSVG():""}<span class="code">${code}</span>${cap?`<span class="cap">${cap}</span>`:""}</div>`;
 document.querySelectorAll("[data-art]").forEach(el=>{const z=+el.dataset.art;el.innerHTML=stampHTML(z,CODES[z],"")});
 
 /* ---------- DATI ---------- */
@@ -673,6 +695,129 @@ if(SR){
 }
 const _ri=renderInventory;renderInventory=function(){_ri();if($("mine"))renderMine()};
 renderMine();renderSayPreview();
+/* ===== Tocchi graziosi (prototipo): saluti, annullo, stagioni ===== */
+/* Lingua: [nome, ciao, (pronuncia), grazie, (pronuncia)] — la pronuncia solo per gli alfabeti non latini */
+const LANG={
+de:["tedesco","Hallo!","","Danke!",""],gsw:["svizzero tedesco","Grüezi!","","Merci vielmal!",""],fr:["francese","Bonjour !","","Merci !",""],
+es:["spagnolo","¡Hola!","","¡Gracias!",""],pt:["portoghese","Olá!","","Obrigado/a!",""],en:["inglese","Hello!","","Thank you!",""],
+au:["inglese australiano","G’day!","","Cheers!",""],uk:["inglese","Hello!","","Cheers!",""],nl:["olandese","Hallo!","","Dank je!",""],
+ru:["russo","Привет!","Privet","Спасибо!","Spasibo"],ua:["ucraino","Привіт!","Pryvit","Дякую!","Diakuiu"],
+by:["bielorusso","Прывітанне!","Pryvitannie","Дзякуй!","Dziakuj"],pl:["polacco","Cześć!","","Dziękuję!",""],
+cs:["ceco","Ahoj!","","Děkuji!",""],sk:["slovacco","Ahoj!","","Ďakujem!",""],sl:["sloveno","Živijo!","","Hvala!",""],
+hr:["croato","Bok!","","Hvala!",""],bs:["bosniaco","Zdravo!","","Hvala!",""],me:["montenegrino","Zdravo!","","Hvala!",""],
+sr:["serbo","Здраво!","Zdravo","Хвала!","Hvala"],mk:["macedone","Здраво!","Zdravo","Благодарам!","Blagodaram"],
+bg:["bulgaro","Здравей!","Zdravei","Благодаря!","Blagodaria"],sq:["albanese","Përshëndetje!","","Faleminderit!",""],
+ro:["rumeno","Bună!","","Mulțumesc!",""],hu:["ungherese","Szia!","","Köszönöm!",""],el:["greco","Γειά σου!","Geia sou","Ευχαριστώ!","Efcharistó"],
+tr:["turco","Merhaba!","","Teşekkürler!",""],fi:["finlandese","Hei!","","Kiitos!",""],sv:["svedese","Hej!","","Tack!",""],
+no:["norvegese","Hei!","","Takk!",""],da:["danese","Hej!","","Tak!",""],is:["islandese","Halló!","","Takk!",""],
+fo:["faroese","Hey!","","Takk fyri!",""],et:["estone","Tere!","","Aitäh!",""],lv:["lettone","Sveiki!","","Paldies!",""],
+lt:["lituano","Labas!","","Ačiū!",""],mt:["maltese","Bonġu!","","Grazzi!",""],ga:["irlandese","Dia duit!","","Go raibh maith agat!",""],
+ca:["catalano","Hola!","","Gràcies!",""],lb:["lussemburghese","Moien!","","Merci!",""],
+ar:["arabo","مرحبا!","Marhaba","شكرا!","Shukran"],he:["ebraico","שלום!","Shalom","תודה!","Toda"],
+tn:["setswana","Dumela!","","Ke a leboga!",""],st:["sesotho","Lumela!","","Kea leboha!",""],sw:["swahili","Jambo!","","Asante!",""],
+am:["amarico","ሰላም!","Selam","አመሰግናለሁ!","Ameseginalehu"],mg:["malgascio","Salama!","","Misaotra!",""],ny:["chichewa","Moni!","","Zikomo!",""],
+rw:["kinyarwanda","Muraho!","","Murakoze!",""],zu:["zulu","Sawubona!","","Ngiyabonga!",""],sn:["shona","Mhoro!","","Ndatenda!",""],
+kl:["groenlandese","Aluu!","","Qujanaq!",""],ht:["creolo haitiano","Bonjou!","","Mèsi!",""],
+fa:["persiano","سلام!","Salam","ممنون!","Mamnun"],prs:["dari","سلام!","Salaam","تشکر!","Tashakor"],
+hy:["armeno","Բարեւ!","Barev","Շնորհակալություն!","Shnorhakalutyun"],az:["azero","Salam!","","Təşəkkür edirəm!",""],
+bn:["bengalese","নমস্কার!","Nomoshkar","ধন্যবাদ!","Dhonnobad"],dz:["dzongkha","Kuzuzangpo!","","Kadrinche!",""],
+ms:["malese","Selamat!","","Terima kasih!",""],id:["indonesiano","Halo!","","Terima kasih!",""],
+km:["khmer","ជំរាបសួរ!","Chom reap suor","អរគុណ!","Orkun"],zh:["cinese","你好!","Nǐ hǎo","谢谢!","Xièxie"],
+yue:["cantonese","你好!","Néih hóu","多謝!","Dō jeh"],ko:["coreano","안녕하세요!","Annyeonghaseyo","감사합니다!","Gamsahamnida"],
+tl:["filippino","Kumusta!","","Salamat!",""],ka:["georgiano","გამარჯობა!","Gamarjoba","მადლობა!","Madloba"],
+ja:["giapponese","こんにちは!","Konnichiwa","ありがとう!","Arigatō"],hi:["hindi","नमस्ते!","Namaste","धन्यवाद!","Dhanyavaad"],
+ne:["nepalese","नमस्ते!","Namaste","धन्यवाद!","Dhanyabad"],kk:["kazako","Сәлем!","Sälem","Рахмет!","Rakhmet"],
+ky:["kirghiso","Салам!","Salam","Рахмат!","Rakhmat"],lo:["lao","ສະບາຍດີ!","Sabaidee","ຂອບໃຈ!","Khop jai"],
+dv:["maldiviano","Assalaamu alaikum!","","Shukuriyaa!",""],mn:["mongolo","Сайн байна уу!","Sain baina uu","Баярлалаа!","Bayarlalaa"],
+my:["birmano","မင်္ဂလာပါ!","Mingalaba","ကျေးဇူးတင်ပါတယ်!","Kyay zu tin ba deh"],ur:["urdu","السلام علیکم!","Assalam-o-alaikum","شکریہ!","Shukriya"],
+si:["singalese","ආයුබෝවන්!","Ayubowan","ස්තූතියි!","Istuti"],tg:["tagico","Салом!","Salom","Ташаккур!","Tashakkur"],
+th:["thailandese","สวัสดี!","Sawasdee","ขอบคุณ!","Khop khun"],tk:["turkmeno","Salam!","","Sag boluň!",""],uz:["uzbeko","Salom!","","Rahmat!",""],
+vi:["vietnamita","Xin chào!","","Cảm ơn!",""],mi:["māori","Kia ora!","","Ngā mihi!",""],rar:["māori delle Cook","Kia orana!","","Meitaki!",""],
+fj:["figiano","Bula!","","Vinaka!",""],ch:["chamorro","Håfa adai!","","Si Yu’os ma’åse’!",""],gil:["kiribati","Mauri!","","Ko rabwa!",""],
+mh:["marshallese","Iakwe!","","Kommol!",""],pau:["palauano","Alii!","","Sulang!",""],tpi:["tok pisin","Gude!","","Tenkyu!",""],
+ty:["tahitiano","Ia ora na!","","Māuruuru!",""],sm:["samoano","Talofa!","","Fa’afetai!",""],to:["tongano","Mālō e lelei!","","Mālō!",""],
+tvl:["tuvaluano","Talofa!","","Fakafetai!",""],bi:["bislama","Halo!","","Tangkyu!",""],pis:["pijin","Halo!","","Tanggio!",""]
+};
+const LANG_OF={
+"Albania":"sq","Andorra":"ca","Austria":"de","Azzorre":"pt","Belgio":"fr","Bielorussia":"by","Bosnia-Erzegovina":"bs","Bulgaria":"bg",
+"Canarie (Isole)":"es","Ceuta":"es","Cipro":"el","Croazia":"hr","Danimarca":"da","Estonia":"et","Faroe (Isole)":"fo","Finlandia":"fi",
+"Francia":"fr","Germania":"de","Gibilterra":"uk","Gran Bretagna":"uk","Grecia":"el","Guernsey":"uk","Irlanda":"ga","Islanda":"is",
+"Jersey":"uk","Kosovo":"sq","Lettonia":"lv","Liechtenstein":"gsw","Lituania":"lt","Lussemburgo":"lb","Macedonia del Nord":"mk","Malta":"mt",
+"Man (Isole)":"uk","Melilla":"es","Moldavia":"ro","Monaco":"fr","Montenegro":"me","Norvegia":"no","Paesi Bassi":"nl","Polonia":"pl",
+"Portogallo":"pt","Repubblica Ceca":"cs","Romania":"ro","Russia":"ru","Serbia":"sr","Slovacchia":"sk","Slovenia":"sl","Spagna":"es",
+"Svezia":"sv","Svizzera":"gsw","Turchia":"tr","Ucraina":"ua","Ungheria":"hu","Algeria":"ar","Egitto":"ar","Giordania":"ar","Israele":"he",
+"Libano":"ar","Libia":"ar","Marocco":"ar","Tunisia":"ar",
+"Angola":"pt","Benin":"fr","Botswana":"tn","Burkina Faso":"fr","Burundi":"fr","Camerun":"fr","Capo Verde":"pt","Ciad":"fr","Comore":"fr",
+"Congo":"fr","Costa d'Avorio":"fr","Eritrea":"ar","Etiopia":"am","Gabon":"fr","Gambia":"en","Ghana":"en","Gibuti":"fr","Guinea":"fr",
+"Guinea Equatoriale":"es","Guinea Bissau":"pt","Kenya":"sw","Lesotho":"st","Liberia":"en","Madagascar":"mg","Malawi":"ny","Mali":"fr",
+"Mauritania":"ar","Mauritius":"fr","Mozambico":"pt","Namibia":"en","Niger":"fr","Nigeria":"en","Repubblica Centrafricana":"fr","Ruanda":"rw",
+"Senegal":"fr","Seychelles":"fr","Sierra Leone":"en","Sud Africa":"zu","Sudan":"ar","Sud Sudan":"en","Tanzania":"sw","Togo":"fr","Uganda":"en",
+"Zambia":"en","Zimbabwe":"sn",
+"Argentina":"es","Bahamas":"en","Barbados":"en","Belize":"en","Bermuda":"en","Bolivia":"es","Brasile":"pt","Canada":"en","Cile":"es",
+"Colombia":"es","Costa Rica":"es","Cuba":"es","Dominica":"en","Ecuador":"es","El Salvador":"es","Giamaica":"en","Grenada":"en",
+"Groenlandia":"kl","Guatemala":"es","Guyana":"en","Haiti":"ht","Honduras":"es","Messico":"es","Nicaragua":"es","Panama":"es","Paraguay":"es",
+"Peru":"es","Porto Rico":"es","Repubblica Dominicana":"es","Stati Uniti":"en","USA":"en","Suriname":"nl","Trinidad & Tobago":"en",
+"Uruguay":"es","Venezuela":"es",
+"Afghanistan":"prs","Arabia Saudita":"ar","Armenia":"hy","Azerbaigian":"az","Bahrain":"ar","Bangladesh":"bn","Bhutan":"dz","Brunei":"ms",
+"Cambogia":"km","Cina":"zh","Corea del Nord":"ko","Corea del Sud":"ko","Emirati Arabi Uniti":"ar","Filippine":"tl","Georgia":"ka",
+"Giappone":"ja","Hong Kong":"yue","India":"hi","Indonesia":"id","Iran":"fa","Iraq":"ar","Kazakistan":"kk","Kirghizistan":"ky","Kuwait":"ar",
+"Laos":"lo","Macao":"yue","Maldive":"dv","Malesia":"ms","Mongolia":"mn","Myanmar":"my","Nepal":"ne","Oman":"ar","Pakistan":"ur","Qatar":"ar",
+"Singapore":"en","Sri Lanka":"si","Tagikistan":"tg","Taiwan":"zh","Thailandia":"th","Turkmenistan":"tk","Uzbekistan":"uz","Vietnam":"vi",
+"Australia":"au","Cook (Isole)":"rar","Fiji":"fj","Guam":"ch","Kiribati":"gil","Marshall (Isole)":"mh","Micronesia":"en","Nauru":"en",
+"Nuova Caledonia":"fr","Nuova Zelanda":"mi","Palau":"pau","Papua Nuova Guinea":"tpi","Polinesia Francese":"ty","Samoa":"sm",
+"Salomone (Isole)":"pis","Tonga":"to","Tuvalu":"tvl","Vanuatu":"bi"
+};
+function greetingHTML(country){
+  const L=LANG[LANG_OF[country]];if(!L)return "";
+  const w=(t,p)=>`<b>${t}</b>${p?` <i>${p}</i>`:""}`;
+  return `<div class="greet"><span class="greet-k">Scrivi sulla cartolina · ${L[0]}</span>
+    <span class="greet-row"><span>Ciao</span>${w(L[1],L[2])}</span><span class="greet-row"><span>Grazie</span>${w(L[3],L[4])}</span></div>`;
+}
+
+/* --- Annullo animato --- */
+function postmarkSVG(){
+  const d=new Date(),dd=String(d.getDate()).padStart(2,"0"),mm=String(d.getMonth()+1).padStart(2,"0"),yy=String(d.getFullYear()).slice(2);
+  return `<svg class="pm" viewBox="0 0 220 120" aria-hidden="true"><g fill="none" stroke="currentColor">
+    <circle cx="60" cy="60" r="52" stroke-width="3"/><circle cx="60" cy="60" r="38" stroke-width="1.5"/>
+    <path d="M118 36q12-8 24 0t24 0 24 0 24 0M118 52q12-8 24 0t24 0 24 0 24 0M118 68q12-8 24 0t24 0 24 0 24 0M118 84q12-8 24 0t24 0 24 0 24 0" stroke-width="3"/></g>
+    <defs><path id="pmArc" d="M18 60a42 42 0 1 1 84 0"/><path id="pmArc2" d="M14 62a46 46 0 0 0 92 0"/></defs>
+    <text font-family="Segoe UI,Arial,sans-serif" font-weight="700" font-size="11" letter-spacing="2.5" fill="currentColor"><textPath href="#pmArc" startOffset="50%" text-anchor="middle">BOLLIBELLI</textPath></text>
+    <text font-family="Segoe UI,Arial,sans-serif" font-weight="700" font-size="10" letter-spacing="2" fill="currentColor"><textPath href="#pmArc2" startOffset="50%" text-anchor="middle">CON AMORE</textPath></text>
+    <text x="60" y="66" font-family="Segoe UI,Arial,sans-serif" font-weight="700" font-size="15" text-anchor="middle" fill="currentColor">${dd}.${mm}.${yy}</text></svg>`;
+}
+
+/* --- Stagioni --- */
+function seasonNow(){
+  const q=new URLSearchParams(location.search).get("stagione");if(q)return q;
+  const d=new Date(),m=d.getMonth()+1,day=d.getDate();
+  if((m===10&&day>=25)||(m===11&&day===1))return "halloween";
+  if(m===12||(m===1&&day<=6))return "natale";
+  if(m<=2)return "inverno";if(m<=5)return "primavera";if(m<=8)return "estate";return "autunno";
+}
+const SEASON_ART={
+  inverno:`<g fill="#fff">${[[12,44],[48,52],[66,16],[86,48],[20,70],[60,74],[90,80],[38,90],[76,96],[14,104],[52,108]].map(([x,y],i)=>`<circle cx="${x}" cy="${y}" r="${i%3?1.6:2.4}" opacity=".9"/>`).join("")}</g>`,
+  natale:`<g fill="#fff">${[[12,44],[48,52],[20,70],[60,74],[38,90],[14,104],[86,62]].map(([x,y],i)=>`<circle cx="${x}" cy="${y}" r="${i%3?1.6:2.4}" opacity=".9"/>`).join("")}</g>
+    <path d="M56 10l2.6 5.4 5.9.8-4.3 4.1 1 5.8-5.2-2.8-5.2 2.8 1-5.8-4.3-4.1 5.9-.8z" fill="#ffd36b"/>`,
+  primavera:`<g>${[[14,108,"#ffb3c7"],[26,114,"#fff"],[40,106,"#ffd36b"],[8,96,"#fff"]].map(([x,y,c])=>`<g transform="translate(${x} ${y})">${[0,72,144,216,288].map(a=>`<ellipse rx="2.2" ry="3.6" transform="rotate(${a}) translate(0 -3.4)" fill="${c}"/>`).join("")}<circle r="1.8" fill="#e0553b"/></g>`).join("")}</g>`,
+  estate:`<g transform="translate(18 92)"><path d="M0 22V-2" stroke="#fff" stroke-width="1.6"/><path d="M-14 -2a14 10 0 0 1 28 0z" fill="#ffd36b"/><path d="M-14 -2a14 10 0 0 1 9.3-9.4L-4.6-2zM4.6-2l.1-9.4A14 10 0 0 1 14-2z" fill="#e0553b"/></g>`,
+  autunno:`<g>${[[16,36,30,"#f2a03d"],[78,46,-20,"#d9622b"],[30,62,60,"#e8b04a"],[84,72,15,"#c4472e"],[12,84,-40,"#f2a03d"]].map(([x,y,r,c])=>`<path d="M0-5C3-3 3 3 0 5-3 3-3-3 0-5z" transform="translate(${x} ${y}) rotate(${r}) scale(1.2)" fill="${c}"/>`).join("")}</g>`,
+  halloween:`<g transform="translate(18 104)"><ellipse rx="9" ry="7" fill="#f28c28"/><path d="M-3-7v-3" stroke="#3b5d2a" stroke-width="2"/><path d="M-4-1l1.5-2 1.5 2zM2.5-1l1.5-2 1.5 2zM-4 2.5q4 2.5 8 0" fill="#3a2a12" stroke="#3a2a12" stroke-width=".8"/></g>
+    <path d="M70 30q3-4 6 0 3-4 6 0-3-1-6 3-3-4-6-3z" fill="#1d1d2b"/>`
+};
+function seasonSVG(){const s=SEASON_ART[seasonNow()];return s?`<svg class="season" viewBox="0 0 100 120" preserveAspectRatio="xMidYMid slice" aria-hidden="true">${s}</svg>`:""}
+
+/* aggancio: stagione nei francobolli, annullo e saluto nel risultato */
+window.__season=true;
+document.querySelectorAll("[data-art]").forEach(el=>{const z=+el.dataset.art;el.innerHTML=stampHTML(z,CODES[z],"")});
+const _rtC=renderTrova;
+renderTrova=function(){_rtC();const c=countryObj(),h=document.querySelector("#result .res .holder");
+  if(c&&h&&document.querySelector("#result .price")){
+    const pm=document.createElement("div");pm.className="pm-wrap";pm.innerHTML=postmarkSVG();h.appendChild(pm);
+    h.classList.add("thump");
+    const what=document.querySelector("#result .what");if(what&&c.zone)what.insertAdjacentHTML("afterend",greetingHTML(c.name));
+  }};
+renderTrova();
+
 </script>
 </body>
 </html>
