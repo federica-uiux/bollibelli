@@ -6,4 +6,4 @@ Fatto con amore da Federica Cutrera – [Spleenyeffe](https://www.postcrossing.c
 
 Tariffe aggiornate al 30/04/2026 — fonte: [Poste Italiane](https://www.poste.it/lettera/postamail-internazionale/zone-tariffarie-di-postamail-internazionale).
 
-Sito statico in un singolo file (`index.html`), pubblicato con GitHub Pages.
+Sito statico in un singolo file (`index.html`), online su **https://bollibelli.pages.dev/** (Cloudflare Pages).
