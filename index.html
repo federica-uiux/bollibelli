@@ -573,8 +573,17 @@ function wordNum(w){
   if(s in NUMW)return n+NUMW[s];
   return null;
 }
+// Come il riconoscimento vocale trascrive le lettere A e B: "una zona 2", "un'A", "ha", "bi"...
+function voiceFix(t){
+  return t.replace(/['’`ʼ]/g," ").replace(/ª/g,"a")
+    .replace(/\buna\s+(?=(?:zona|z)\s*\S)/g,"1 a ")          // "una zona 2" = "un A zona 2"
+    .replace(/\buna(?=\s*(?:[,;.]|$|\s+(?:e|ed|poi)\s))/g,"1 a") // "...e una" = "...e un A"
+    .replace(/\b(?:ha|ah|hai)(?=\s+(?:zona|z)\b|\s*(?:[,;.]|$))/g,"a")
+    .replace(/\b(?:bi|be|bie)\b/g,"b")
+    .replace(/\b(\d+)\s*([ab])\b/g,"$1 $2");                     // "2a", "3b" = "2 A", "3 B"
+}
 function normalize(t){
-  return t.toLowerCase().normalize("NFD").replace(/\p{M}/gu,"")
+  return voiceFix(t.toLowerCase().normalize("NFD").replace(/\p{M}/gu,""))
     .replace(/€/g," euro ").replace(/(\d),(\d)/g,"$1.$2").replace(/[×*]/g," x ")
     .replace(/[a-z0-9.]+/g,w=>{const n=wordNum(w);return n===null||/^\d/.test(w)?w:String(n)})
     .replace(/(\d+)\s*(?:x)\b/g,"$1 x ");
