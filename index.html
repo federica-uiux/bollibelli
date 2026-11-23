@@ -198,6 +198,10 @@ main>.tabs .tab{padding:8px 18px;font-size:13.5px}
 /* fucsia per puntino e cuore; "quattro" come il resto */
 .logo span,footer .heart{color:#c2185b}
 .zones h2 em{color:inherit;font-style:normal}
+
+/* azioni sopra la lista; chip peso selezionata come quella del paese */
+.inv-actions{margin:0 0 4px}
+.letter .weight[aria-pressed="true"]{color:var(--chip);background:color-mix(in srgb,var(--chip) 9%,#fff);border-color:color-mix(in srgb,var(--chip) 45%,#fff)}
 </style>
 </head>
 <body>
@@ -226,8 +230,8 @@ main>.tabs .tab{padding:8px 18px;font-size:13.5px}
   <section id="view-combinazioni" class="cgrid" hidden>
     <div>
       <div class="target" id="target"></div>
-      <div id="inventory"></div>
       <div class="inv-actions"><span>Lire valide se emesse dal 1967.</span><button id="reset">Azzera</button></div>
+      <div id="inventory"></div>
     </div>
     <div id="combos"></div>
   </section>
