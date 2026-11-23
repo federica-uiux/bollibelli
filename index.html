@@ -267,6 +267,10 @@ details.manual summary:hover .chev{border-color:var(--ink)}
 .mine-head{display:flex;align-items:baseline;justify-content:space-between;gap:12px}
 .mine-reset{font:600 12.5px var(--sans);color:var(--muted);text-decoration:underline;text-underline-offset:3px}
 .mine-reset:hover{color:var(--ink)}
+
+/* badge della combinazione più economica */
+.badge.cheap{background:var(--z0)}
+.combo-card.cheap{border:1.5px solid var(--z0)}
 </style>
 </head>
 <body>
@@ -326,7 +330,7 @@ details.manual summary:hover .chev{border-color:var(--ink)}
 
 <footer>
   <div class="wrap">
-    <span>Tariffe al 30/04/2026 · <a href="https://www.poste.it/lettera/postamail-internazionale/zone-tariffarie-di-postamail-internazionale" target="_blank" rel="noopener">Poste Italiane ↗</a></span>
+    <span>Tariffe aggiornate al 01/05/2026 · <a href="https://www.poste.it/lettera/postamail-internazionale/zone-tariffarie-di-postamail-internazionale" target="_blank" rel="noopener">Poste Italiane ↗</a></span>
   </div>
 </footer>
 
@@ -347,16 +351,21 @@ const STAMPS = [
   ["0.05","€0,05",5],["0.10","€0,10",10],["0.15","€0,15",15],["0.25","€0,25",25],
   ["500lire","500 lire",26],["750lire","750 lire",39],["0.41","€0,41",41],["800lire","800 lire",41],
   ["850lire","850 lire",44],["0.45","€0,45",45],["0.60","€0,60",60],["0.70","€0,70",70],["0.75","€0,75",75]
-].map(([code,name,cents])=>({code,name,cents,service:"Posta4",weight:"integrativo",lire:/lire/.test(code)}))
+].map(([code,name,cents])=>({code,name,cents,service:"Posta Ordinaria",weight:"integrativo",lire:/lire/.test(code)}))
 .concat([
-  {code:"B",name:"B",cents:130,service:"Posta4",weight:"fino a 20g",zone:0},
-  {code:"B50g",name:"B 50g",cents:290,service:"Posta4",weight:"20-50g",zone:0},
+  {code:"B",name:"B",cents:130,service:"Posta Ordinaria",weight:"fino a 20g",zone:0},
+  {code:"B50g",name:"B 50g",cents:290,service:"Posta Ordinaria",weight:"20-50g",zone:0},
   {code:"B1",name:"B Zona 1",cents:135,service:"Postamail",weight:"fino a 20g",zone:1},
   {code:"B1-50g",name:"B Zona 1 50g",cents:330,service:"Postamail",weight:"20-50g",zone:1},
   {code:"B2",name:"B Zona 2",cents:255,service:"Postamail",weight:"fino a 20g",zone:2},
   {code:"B2-50g",name:"B Zona 2 50g",cents:415,service:"Postamail",weight:"20-50g",zone:2},
   {code:"B3",name:"B Zona 3",cents:335,service:"Postamail",weight:"fino a 20g",zone:3},
-  {code:"B3-50g",name:"B Zona 3 50g",cents:515,service:"Postamail",weight:"20-50g",zone:3}
+  {code:"B3-50g",name:"B Zona 3 50g",cents:515,service:"Postamail",weight:"20-50g",zone:3},
+  // Francobolli A: il servizio prioritario non c'è più, ma restano validi come valore per gli altri servizi
+  {code:"A",name:"A",cents:300,service:"ex Posta1",weight:"",zone:0,a:true},
+  {code:"A1",name:"A Zona 1",cents:375,service:"ex Postapriority",weight:"",zone:1,a:true},
+  {code:"A2",name:"A Zona 2",cents:485,service:"ex Postapriority",weight:"",zone:2,a:true},
+  {code:"A3",name:"A Zona 3",cents:595,service:"ex Postapriority",weight:"",zone:3,a:true}
 ]);
 
 const Z1="Albania;Andorra;Austria;Azzorre;Belgio;Bielorussia;Bosnia-Erzegovina;Bulgaria;Canarie (Isole);Ceuta;Cipro;Croazia;Danimarca;Estonia;Faroe (Isole);Finlandia;Francia;Germania;Gibilterra;Gran Bretagna;Grecia;Guernsey;Irlanda;Islanda;Jersey;Kosovo;Lettonia;Liechtenstein;Lituania;Lussemburgo;Macedonia del Nord;Malta;Man (Isole);Melilla;Moldavia;Monaco;Montenegro;Norvegia;Paesi Bassi;Polonia;Portogallo;Repubblica Ceca;Romania;Russia;Serbia;Slovacchia;Slovenia;Spagna;Svezia;Svizzera;Turchia;Ucraina;Ungheria;Algeria;Egitto;Giordania;Israele;Libano;Libia;Marocco;Tunisia";
@@ -413,7 +422,13 @@ function findCombinations(target,inv){
     }
   })(0,target);
   const count=c=>c.stamps.reduce((a,x)=>a+x.count,0);
-  return out.sort((a,b)=>count(a)-count(b)||a.waste-b.waste).slice(0,10).map(c=>({...c,n:count(c)}));
+  const all=out.map(c=>({...c,n:count(c)})).sort((a,b)=>a.n-b.n||a.waste-b.waste);
+  if(!all.length)return all;
+  // la più economica: spreco minimo, a parità meno francobolli
+  const cheap=all.reduce((m,c)=>c.waste<m.waste||(c.waste===m.waste&&c.n<m.n)?c:m);
+  if(cheap===all[0])return all.slice(0,10);
+  cheap.cheap=true;
+  return [all[0],cheap,...all.filter(c=>c!==all[0]&&c!==cheap)].slice(0,10);
 }
 
 /* ---------- UI ---------- */
@@ -487,10 +502,10 @@ $("weights").onclick=e=>{const b=e.target.closest(".weight");if(b){state.weight=
 
 /* render: combinazioni */
 var renderInventory=function(){
-  const groups=[["Francobolli integrativi",STAMPS.filter(s=>s.zone===undefined)],["Francobolli B",STAMPS.filter(s=>s.zone!==undefined)]];
+  const groups=[["Francobolli integrativi",STAMPS.filter(s=>s.zone===undefined)],["Francobolli B",STAMPS.filter(s=>s.zone!==undefined&&!s.a)],["Francobolli A",STAMPS.filter(s=>s.a)]];
   $("inventory").innerHTML=groups.map(([label,list])=>`<div class="inv-group">${label}</div>`+list.map(s=>{
     const n=state.inv[s.code]||0;
-    const sub=s.lire?euro(s.cents).replace(" €"," €"):s.zone!==undefined?euro(s.cents)+" · "+s.weight:"";
+    const sub=s.lire||s.a?euro(s.cents):s.zone!==undefined?euro(s.cents)+" · "+s.weight:"";
     return `<div class="inv${n?' on':''}" data-code="${s.code}"><div><div class="nm">${s.name}</div>${sub?`<div class="sub">${sub}</div>`:""}</div>
       <div class="stepper"><button data-d="-1" ${n?"":"disabled"} aria-label="Togli ${s.name}">−</button><input inputmode="numeric" value="${n}" aria-label="Quantità ${s.name}"><button data-d="1" aria-label="Aggiungi ${s.name}">+</button></div></div>`}).join("")).join("");
 }
@@ -523,7 +538,7 @@ function renderCombos(){
     box.innerHTML=idle("warn","Manca ancora qualcosa.",`Nessuna combinazione trovata: hai ${euro(have)}, ne mancano ${euro(target-have)}. Aggiungi più francobolli.`,ICON.warn);return;
   }
   box.innerHTML=`<div class="combos-head"><span class="step-n">2</span><h3>Combinazioni trovate</h3><span class="count">${combos.length}</span></div>`+
-    combos.map((cb,i)=>`<div class="combo-card${i===0?" best":""}"><div class="hd"><div>${i===0?`<div class="badge">${ICON.check} Ottimale</div>`:""}<div class="n">${cb.n} francoboll${cb.n===1?"o":"i"}</div></div>
+    combos.map((cb,i)=>`<div class="combo-card${i===0?" best":""}${cb.cheap?" cheap":""}"><div class="hd"><div>${i===0?`<div class="badge">${ICON.check} ${combos.some(x=>x.cheap)?"Meno francobolli":"Ottimale"}</div>`:cb.cheap?`<div class="badge cheap">Più economica</div>`:""}<div class="n">${cb.n} francoboll${cb.n===1?"o":"i"}</div></div>
       <div><div class="tot">${euro(cb.total)}</div><div class="extra${cb.waste?"":" exact"}">${cb.waste?"+"+euro(cb.waste).replace(" €"," €")+" extra":"Importo esatto"}</div></div></div>
       <div class="chips">${cb.stamps.slice().sort((a,b)=>a.stamp.cents-b.stamp.cents).map(x=>`<span class="chip">${x.count}× ${x.stamp.name}</span>`).join("")}</div></div>`).join("");
 }
@@ -566,7 +581,10 @@ function normalize(t){
 }
 function parseSegment(seg){
   const s=" "+seg.trim()+" ";
-  if(!/\d|\bb\b|\bb\d/.test(s))return null;
+  if(!/\d|\bb\b|\bb\d|\ba\b/.test(s))return null;
+  // francobolli A: solo frasi brevi tipo "un A", "2 A zona 3", "a2" (la "a" è anche una preposizione)
+  const am=s.match(/^\s*(?:(\d+)\s+)?a\s*(?:zona\s*|z\s*)?([123])?\s*$/);
+  if(am){const st=STAMPS.find(x=>x.code===(am[2]?"A"+am[2]:"A"));return {stamp:st,qty:am[1]?+am[1]:1}}
   // francobolli B
   const bm=s.match(/\bb\s*(?:zona\s*|z\s*)?([123])?(?=\b|\s|\d|g)/);
   if(bm&&/\bb(\s|\d|$)/.test(s)){
