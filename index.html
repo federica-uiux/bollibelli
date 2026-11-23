@@ -224,6 +224,46 @@ footer .wrap{justify-content:flex-end}
 /* Bodoni Moda con i tratti sottili più robusti */
 body{font-optical-sizing:none;font-variation-settings:"opsz" 11}
 .letter,.res .price,.zones h2,.target,.combos-head h3{font-weight:500}
+/* ===== Dimmi quali francobolli hai (prototipo) ===== */
+.say{margin:6px 0 18px}
+.say-label{display:block;font:600 13px var(--sans);margin-bottom:8px}
+.say-box{display:flex;align-items:flex-start;gap:8px;background:#fff;border:1.5px solid #c3ccda;border-radius:16px;padding:8px 8px 8px 16px;transition:border-color .15s,box-shadow .15s}
+.say-box:focus-within{border-color:var(--red);box-shadow:0 0 0 4px color-mix(in srgb,var(--red) 12%,transparent)}
+.say-box textarea{flex:1;border:0;outline:0;resize:none;font:16px/1.45 var(--sans);color:var(--ink);background:none;padding:6px 0;min-height:48px}
+.say-box textarea::placeholder{color:#7b8597}
+.say-btns{display:flex;gap:6px;align-self:flex-end}
+.say-mic,.say-go{width:40px;height:40px;border-radius:50%;display:grid;place-items:center;flex:none}
+.say-mic{background:color-mix(in srgb,var(--red) 10%,#fff);color:var(--red)}
+.say-mic.on{background:var(--red);color:#fff;animation:pulse 1.2s infinite}
+@keyframes pulse{0%{box-shadow:0 0 0 0 color-mix(in srgb,var(--red) 45%,transparent)}100%{box-shadow:0 0 0 12px transparent}}
+.say-go{background:var(--ink);color:#fff}
+.say-go:disabled{opacity:.3;cursor:default}
+.say-hint{font-size:12px;color:var(--muted);margin-top:8px;min-height:1.2em}
+.say-preview{display:flex;flex-wrap:wrap;gap:6px;margin-top:10px}
+.say-preview .chip{border-style:dashed;background:#fff}
+.say-preview .chip.bad{border-color:#b8332a66;color:#b8332a;background:#fdf5f4}
+.mine{margin-top:6px}
+.mine h4{font:700 11px var(--sans);letter-spacing:.14em;text-transform:uppercase;color:var(--red);margin:14px 0 8px}
+.mine .chips{margin:0}
+.mine .chip{display:inline-flex;align-items:center;gap:6px;font-size:13px;padding:5px 6px 5px 12px;background:#fff}
+.mine .chip b{font-weight:700}
+.mine .chip button{width:22px;height:22px;border-radius:50%;color:var(--muted);font-size:15px;line-height:1}
+.mine .chip button:hover{background:var(--paper);color:var(--ink)}
+.mine-empty{font-size:13px;color:var(--muted)}
+details.manual{margin-top:18px;border-top:1px solid var(--rule)}
+details.manual summary{cursor:pointer;font:600 13px var(--sans);color:var(--ink);padding:14px 0;list-style:none}
+details.manual summary::-webkit-details-marker{display:none}
+details.manual summary::after{content:" ⌄";color:var(--muted)}
+details.manual[open] summary::after{content:" ⌃"}
+.mine .chip{padding:4px;gap:4px}
+.mine .chip b{margin-left:2px}
+.mine .chip button{width:26px;height:26px;border:1px solid var(--line);background:#fff;font:600 15px var(--sans);color:var(--ink);display:grid;place-items:center}
+.mine .chip button:last-child{margin-left:4px}
+details.manual summary{display:flex;align-items:center;justify-content:space-between;gap:12px;font-size:14px}
+details.manual summary::after{content:none!important}
+details.manual summary .chev{flex:none;width:30px;height:30px;padding:7px;border-radius:50%;background:#fff;border:1px solid var(--line);color:var(--ink);transition:transform .2s}
+details.manual[open] summary .chev{transform:rotate(180deg)}
+details.manual summary:hover .chev{border-color:var(--ink)}
 </style>
 </head>
 <body>
@@ -253,9 +293,19 @@ body{font-optical-sizing:none;font-variation-settings:"opsz" 11}
   <section id="view-combinazioni" class="cgrid" hidden>
     <div>
       <div class="target" id="target"></div>
-      <p class="inv-note">Ricorda: i francobolli in Lire sono validi solo se emessi dal 1967</p>
+      <div class="say">
+        <label class="say-label" for="say-in">Dimmi quali francobolli hai</label>
+        <div class="say-box"><textarea id="say-in" rows="2" placeholder="Es. tre da 60 centesimi, due da 500 lire e un B zona 1"></textarea>
+          <span class="say-btns"><button class="say-mic" id="say-mic" aria-label="Detta i francobolli" hidden></button><button class="say-go" id="say-go" aria-label="Aggiungi" disabled></button></span></div>
+        <div class="say-preview" id="say-preview"></div>
+        <p class="say-hint" id="say-hint"></p>
+      </div>
+      <div class="mine" id="mine"></div>
+      <p class="inv-note" style="margin-top:12px">Ricorda: i francobolli in Lire sono validi solo se emessi dal 1967</p>
+      <details class="manual"><summary><span>Oppure scegli dall’elenco completo</span><svg class="chev" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m6 9 6 6 6-6"/></svg></summary>
       <div id="inventory"></div>
       <div class="inv-actions"><button id="reset">Azzera</button></div>
+      </details>
     </div>
     <div id="combos"></div>
   </section>
@@ -433,7 +483,7 @@ function renderTrova(){
 $("weights").onclick=e=>{const b=e.target.closest(".weight");if(b){state.weight=b.dataset.w;save();renderAll()}};
 
 /* render: combinazioni */
-function renderInventory(){
+var renderInventory=function(){
   const groups=[["Francobolli integrativi",STAMPS.filter(s=>s.zone===undefined)],["Francobolli B",STAMPS.filter(s=>s.zone!==undefined)]];
   $("inventory").innerHTML=groups.map(([label,list])=>`<div class="inv-group">${label}</div>`+list.map(s=>{
     const n=state.inv[s.code]||0;
@@ -489,6 +539,110 @@ window.addEventListener("hashchange",()=>go(location.hash.slice(1)));
 
 function renderAll(){renderTrova();renderCombos()}
 renderInventory();renderAll();go(location.hash.slice(1));
+/* ===== Dimmi quali francobolli hai (prototipo) ===== */
+const NUMW={zero:0,un:1,uno:1,una:1,due:2,tre:3,quattro:4,cinque:5,sei:6,sette:7,otto:8,nove:9,dieci:10,undici:11,dodici:12,tredici:13,
+  quattordici:14,quindici:15,sedici:16,diciassette:17,diciotto:18,diciannove:19};
+const TENS=[["novant",90],["ottant",80],["settant",70],["sessant",60],["cinquant",50],["quarant",40],["trent",30],["vent",20]];
+function wordNum(w){
+  if(/^\d+(\.\d+)?$/.test(w))return parseFloat(w);
+  if(w in NUMW)return NUMW[w];
+  let n=0,s=w;
+  const h=s.match(/^(due|tre|quattro|cinque|sei|sette|otto|nove)?cento?/);
+  if(h&&h[0].startsWith(h[1]||"")&&/cent/.test(h[0])){n+=(h[1]?NUMW[h[1]]:1)*100;s=s.slice(h[0].length)}
+  if(!s)return n||null;
+  for(const [t,v] of TENS){if(s.startsWith(t)){n+=v;s=s.slice(t.length).replace(/^[ai]/,"");break}}
+  if(!s)return n||null;
+  if(s in NUMW)return n+NUMW[s];
+  return null;
+}
+function normalize(t){
+  return t.toLowerCase().normalize("NFD").replace(/\p{M}/gu,"")
+    .replace(/€/g," euro ").replace(/(\d),(\d)/g,"$1.$2").replace(/[×*]/g," x ")
+    .replace(/[a-z0-9.]+/g,w=>{const n=wordNum(w);return n===null||/^\d/.test(w)?w:String(n)})
+    .replace(/(\d+)\s*(?:x)\b/g,"$1 x ");
+}
+function parseSegment(seg){
+  const s=" "+seg.trim()+" ";
+  if(!/\d|\bb\b|\bb\d/.test(s))return null;
+  // francobolli B
+  const bm=s.match(/\bb\s*(?:zona\s*|z\s*)?([123])?(?=\b|\s|\d|g)/);
+  if(bm&&/\bb(\s|\d|$)/.test(s)){
+    let rest=s.replace(bm[0]," ");
+    let zone=bm[1]?+bm[1]:null;
+    const zm=rest.match(/\bzona\s*([123])\b/);if(!zone&&zm){zone=+zm[1];rest=rest.replace(zm[0]," ")}
+    const hm=rest.match(/\b50\s*(?:g|gr|grammi|grammo)?\b|oltre\s*(?:i\s*)?20\s*(?:g|gr|grammi)?/);
+    const heavy=!!hm;if(hm)rest=rest.replace(hm[0]," ");
+    const q=rest.match(/\b(\d+)\b/);const qty=q?+q[1]:1;
+    const code=zone?`B${zone}${heavy?"-50g":""}`:(heavy?"B50g":"B");
+    const st=STAMPS.find(x=>x.code===code);return st?{stamp:st,qty}:null;
+  }
+  const lire=/\blir[ae]\b|\bl\.?\s*$/.test(s), cent=/\bcent(esimi|esimo|s)?\b|\bc\b/.test(s), eur=/\beuro\b/.test(s);
+  const nums=[...s.matchAll(/\d+(?:\.\d+)?/g)].map(m=>m[0]);
+  if(!nums.length)return null;
+  let qty=1,val;
+  const pair=s.match(/\b(\d+)\s*(?:x|da|francobolli\s+da|francobollo\s+da|pezzi\s+da)\s*(\d+(?:\.\d+)?)/);
+  if(pair){qty=+pair[1];val=pair[2]}
+  else if(nums.length>=2){qty=+nums[0];val=nums[1]}
+  else val=nums[0];
+  const v=parseFloat(val);
+  let st=null;
+  if(lire)st=STAMPS.find(x=>x.code===`${Math.round(v)}lire`);
+  else{
+    let c=null;
+    if(/\./.test(val)||(eur&&!cent&&v<10))c=Math.round(v*100);
+    else if(cent)c=Math.round(v);
+    if(c!==null)st=STAMPS.find(x=>!x.lire&&x.zone===undefined&&x.cents===c);
+    else st=STAMPS.find(x=>!x.lire&&x.zone===undefined&&x.cents===v)||STAMPS.find(x=>x.code===`${v}lire`);
+  }
+  return st?{stamp:st,qty}:null;
+}
+function parseSay(text){
+  const t=normalize(text);
+  const segs=t.split(/[,;\n]|\s+e\s+|\s+ed\s+|\s+poi\s+|\s+piu\s+|\s+anche\s+/).map(x=>x.replace(/\b(ho|abbiamo|ce|ci sono|tengo|in tutto|francobolli|francobollo|di)\b/g," ").trim()).filter(Boolean);
+  const ok={},bad=[];
+  segs.forEach(sg=>{const r=parseSegment(sg);if(r){ok[r.stamp.code]=(ok[r.stamp.code]||0)+r.qty}else if(/\w/.test(sg))bad.push(sg)});
+  return {ok,bad};
+}
+const MIC='<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="3" width="6" height="11" rx="3"/><path d="M5 11a7 7 0 0 0 14 0M12 18v3"/></svg>';
+const SEND='<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4"><path d="M5 12h14M13 6l6 6-6 6"/></svg>';
+function renderSayPreview(){
+  const {ok,bad}=parseSay($("say-in").value);
+  const items=Object.entries(ok);
+  $("say-preview").innerHTML=items.map(([c,n])=>`<span class="chip">+ ${n}× ${STAMPS.find(s=>s.code===c).name}</span>`).join("")+
+    bad.map(b=>`<span class="chip bad">Non ho capito: «${esc(b)}»</span>`).join("");
+  $("say-go").disabled=!items.length;
+}
+function applySay(){
+  const {ok}=parseSay($("say-in").value);
+  if(!Object.keys(ok).length)return;
+  Object.entries(ok).forEach(([c,n])=>{state.inv[c]=Math.min(99,(state.inv[c]||0)+n)});
+  save();$("say-in").value="";renderSayPreview();renderInventory();renderCombos();renderMine();
+  $("say-hint").textContent="Fatto! Puoi aggiungerne altri.";
+}
+function renderMine(){
+  const list=STAMPS.filter(s=>state.inv[s.code]);
+  $("mine").innerHTML=`<h4>I tuoi francobolli</h4>`+(list.length?`<div class="chips">${list.map(s=>`<span class="chip"><button data-d="-1" data-c="${s.code}" aria-label="Uno in meno ${s.name}">−</button><b>${state.inv[s.code]}×</b> ${s.name}<button data-d="1" data-c="${s.code}" aria-label="Uno in più ${s.name}">+</button></span>`).join("")}</div>`:`<p class="mine-empty">Ancora nessuno. Scrivili o dettali qui sopra.</p>`);
+}
+$("say-in").oninput=()=>{renderSayPreview();$("say-hint").textContent=""};
+$("say-in").onkeydown=e=>{if(e.key==="Enter"&&!e.shiftKey){e.preventDefault();applySay()}};
+$("say-go").innerHTML=SEND;$("say-go").onclick=applySay;
+$("mine").onclick=e=>{const b=e.target.closest("[data-d]");if(b)setQty(b.dataset.c,(state.inv[b.dataset.c]||0)+ +b.dataset.d)};
+const SR=window.SpeechRecognition||window.webkitSpeechRecognition;
+if(SR){
+  const mic=$("say-mic");mic.hidden=false;mic.innerHTML=MIC;
+  let rec=null,base="";
+  mic.onclick=()=>{
+    if(rec){rec.stop();return}
+    rec=new SR();rec.lang="it-IT";rec.interimResults=true;rec.continuous=false;
+    base=$("say-in").value?$("say-in").value.trim()+", ":"";
+    rec.onresult=e=>{$("say-in").value=base+[...e.results].map(r=>r[0].transcript).join(" ");renderSayPreview()};
+    rec.onend=()=>{mic.classList.remove("on");rec=null;$("say-hint").textContent="";applySay()};
+    rec.onerror=e=>{$("say-hint").textContent=e.error==="not-allowed"?"Serve il permesso del microfono.":"Non ti ho sentito bene, riprova."};
+    mic.classList.add("on");$("say-hint").textContent="Ti ascolto…";rec.start();
+  };
+}
+const _ri=renderInventory;renderInventory=function(){_ri();if($("mine"))renderMine()};
+renderMine();renderSayPreview();
 </script>
 </body>
 </html>
