@@ -272,8 +272,8 @@ const ART=[
 '<svg viewBox="0 0 100 120" preserveAspectRatio="xMidYMid slice"><circle cx="54" cy="58" r="28" fill="#ffd36b"/><path d="M-5 120 L30 66 L50 94 L70 70 L105 120Z" fill="#7a2416"/><path d="M30 66 L38 78 L31 75 L23 78Z" fill="#fff"/><path d="M70 70 L77 80 L70 78 L64 80Z" fill="#fff"/><path d="M60 26 h16 M66 20 h20 M10 44 h12" stroke="#ffffff88" stroke-width="2.5" stroke-linecap="round"/></svg>',
 '<svg viewBox="0 0 100 120" preserveAspectRatio="xMidYMid slice"><circle cx="74" cy="34" r="11" fill="#ffd36b"/><path d="M0 120 V82 Q22 52 50 60 Q74 66 66 86 Q60 72 49 78 Q42 94 62 100 Q86 106 100 88 V120Z" fill="#fff"/><path d="M0 120 V100 Q30 88 60 106 Q80 116 100 106 V120Z" fill="#c8b6ea"/></svg>'];
 const CODES=["B","B1","B2","B3"];
-const stampHTML=(z,code,cap)=>`<div class="stamp-in">${ART[z]}<span class="code">${code}</span><span class="cap">${cap}</span></div>`;
-document.querySelectorAll("[data-art]").forEach(el=>{const z=+el.dataset.art;el.innerHTML=stampHTML(z,CODES[z],"Italia")});
+const stampHTML=(z,code,cap)=>`<div class="stamp-in">${ART[z]}<span class="code">${code}</span>${cap?`<span class="cap">${cap}</span>`:""}</div>`;
+document.querySelectorAll("[data-art]").forEach(el=>{const z=+el.dataset.art;el.innerHTML=stampHTML(z,CODES[z],"")});
 
 /* ---------- DATI ---------- */
 // value in centesimi per evitare errori di arrotondamento
