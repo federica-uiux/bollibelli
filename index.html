@@ -212,6 +212,7 @@ main>.tabs .tab{padding:8px 18px;font-size:13.5px}
 .inv.on .nm{font-style:normal}
 .inv .sub{font-size:12.5px}
 .target .amt{font-style:normal}
+.stamp .code small{display:block;font-size:.42em;letter-spacing:.02em;margin-top:.15em}
 </style>
 </head>
 <body>
@@ -411,8 +412,9 @@ function renderTrova(){
   $("sel-name").textContent=c.name;$("sel-zone").textContent=ZONE_SHORT(c.zone);
   $("weights").innerHTML=weightOptions(c.zone).map(o=>`<button class="weight" aria-pressed="${state.weight===o.value}" data-w="${o.value}">${o.value==="standard"?"fino a 20 g":"oltre 20 g fino a 50 g"}</button>`).join('<span class="or">o</span>');
   const s=requiredStamp(c.zone,state.weight);
-  const big=s.code.replace("-50g","");
-  r.innerHTML=`<div class="res"><div class="holder"><div class="stamp z${c.zone}">${stampHTML(c.zone,big,s.service+(s.code.endsWith("50g")?" · 50g":""))}</div></div>
+  const heavy=s.code.endsWith("50g");
+  const big=s.code.replace(/-?50g$/,"")+(heavy?'<small>50g</small>':"");
+  r.innerHTML=`<div class="res"><div class="holder"><div class="stamp z${c.zone}">${stampHTML(c.zone,big,s.service)}</div></div>
     <div class="price">${euro(s.cents)}</div>
     <p class="what"><b>${s.name}</b> · ${s.service} ${s.weight}</p>
     <a class="src" href="${POSTE_URL}" target="_blank" rel="noopener">Verifica su Poste ↗</a></div>`;
