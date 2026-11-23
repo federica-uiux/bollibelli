@@ -264,6 +264,9 @@ details.manual summary::after{content:none!important}
 details.manual summary .chev{flex:none;width:30px;height:30px;padding:7px;border-radius:50%;background:#fff;border:1px solid var(--line);color:var(--ink);transition:transform .2s}
 details.manual[open] summary .chev{transform:rotate(180deg)}
 details.manual summary:hover .chev{border-color:var(--ink)}
+.mine-head{display:flex;align-items:baseline;justify-content:space-between;gap:12px}
+.mine-reset{font:600 12.5px var(--sans);color:var(--muted);text-decoration:underline;text-underline-offset:3px}
+.mine-reset:hover{color:var(--ink)}
 </style>
 </head>
 <body>
@@ -621,12 +624,12 @@ function applySay(){
 }
 function renderMine(){
   const list=STAMPS.filter(s=>state.inv[s.code]);
-  $("mine").innerHTML=`<h4>I tuoi francobolli</h4>`+(list.length?`<div class="chips">${list.map(s=>`<span class="chip"><button data-d="-1" data-c="${s.code}" aria-label="Uno in meno ${s.name}">−</button><b>${state.inv[s.code]}×</b> ${s.name}<button data-d="1" data-c="${s.code}" aria-label="Uno in più ${s.name}">+</button></span>`).join("")}</div>`:`<p class="mine-empty">Ancora nessuno. Scrivili o dettali qui sopra.</p>`);
+  $("mine").innerHTML=`<div class="mine-head"><h4>I tuoi francobolli</h4>${list.length?`<button class="mine-reset" data-reset>Azzera</button>`:""}</div>`+(list.length?`<div class="chips">${list.map(s=>`<span class="chip"><button data-d="-1" data-c="${s.code}" aria-label="Uno in meno ${s.name}">−</button><b>${state.inv[s.code]}×</b> ${s.name}<button data-d="1" data-c="${s.code}" aria-label="Uno in più ${s.name}">+</button></span>`).join("")}</div>`:`<p class="mine-empty">Ancora nessuno. Scrivili o dettali qui sopra.</p>`);
 }
 $("say-in").oninput=()=>{renderSayPreview();$("say-hint").textContent=""};
 $("say-in").onkeydown=e=>{if(e.key==="Enter"&&!e.shiftKey){e.preventDefault();applySay()}};
 $("say-go").innerHTML=SEND;$("say-go").onclick=applySay;
-$("mine").onclick=e=>{const b=e.target.closest("[data-d]");if(b)setQty(b.dataset.c,(state.inv[b.dataset.c]||0)+ +b.dataset.d)};
+$("mine").onclick=e=>{if(e.target.closest("[data-reset]")){$("reset").click();renderMine();return}const b=e.target.closest("[data-d]");if(b)setQty(b.dataset.c,(state.inv[b.dataset.c]||0)+ +b.dataset.d)};
 const SR=window.SpeechRecognition||window.webkitSpeechRecognition;
 if(SR){
   const mic=$("say-mic");mic.hidden=false;mic.innerHTML=MIC;
