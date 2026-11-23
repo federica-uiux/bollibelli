@@ -173,7 +173,7 @@ main>.tabs .tab{padding:8px 18px;font-size:13.5px}
 #view-trova>div:first-child{align-self:start;padding-top:clamp(8px,3vw,40px)}
 
 /* chip nel colore della zona */
-.letter{--chip:var(--c,var(--red))}
+.letter{--chip:var(--c,var(--ink))}
 .letter .combo-btn.has{color:var(--chip);background:color-mix(in srgb,var(--chip) 9%,#fff);border-color:color-mix(in srgb,var(--chip) 45%,#fff)}
 .letter .combo-btn.has:hover,.letter .combo-btn.has[aria-expanded="true"]{background:color-mix(in srgb,var(--chip) 16%,#fff);border-color:var(--chip)}
 .letter .combo-btn .chev{color:currentColor}
@@ -213,12 +213,24 @@ main>.tabs .tab{padding:8px 18px;font-size:13.5px}
 .inv .sub{font-size:12.5px}
 .target .amt{font-style:normal}
 .stamp .code small{display:block;font-size:.42em;letter-spacing:.02em;margin-top:.15em}
+
+/* credito sotto il logo */
+.credit{font-size:12.5px;color:var(--muted);margin-top:2px}
+.credit a{color:var(--ink);font-weight:600;text-decoration:none;border-bottom:1px solid var(--line)}
+.credit a:hover{border-color:var(--ink)}
+.credit .heart{color:#c2185b}
+footer .wrap{justify-content:flex-end}
+
+/* Bodoni Moda con i tratti sottili più robusti */
+body{font-optical-sizing:none;font-variation-settings:"opsz" 11}
+.letter,.res .price,.zones h2,.target,.combos-head h3{font-weight:500}
 </style>
 </head>
 <body>
 <header class="wrap">
   <div class="bar">
-    <span class="logo">Bollibelli<span>.</span></span>
+    <div class="brandbox"><span class="logo">Bollibelli<span>.</span></span>
+      <p class="credit">Fatto con <span class="heart">♥</span> da <a href="https://www.postcrossing.com/user/spleenyeffe" target="_blank" rel="noopener">Spleenyeffe</a></p></div>
   </div>
 </header>
 
@@ -231,7 +243,7 @@ main>.tabs .tab{padding:8px 18px;font-size:13.5px}
     <div>
       <p class="kicker">Calcolatore francobolli</p>
       <p class="letter">Spedisco una lettera in
-        <span class="fill combo" id="combo"><button class="combo-btn" id="combo-btn" aria-haspopup="listbox" aria-expanded="false"><span class="ph" id="combo-label">…dove?</span><svg class="chev" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><path d="m6 9 6 6 6-6"/></svg></button>
+        <span class="fill combo" id="combo"><button class="combo-btn" id="combo-btn" aria-haspopup="listbox" aria-expanded="false"><span class="ph" id="combo-label">Scegli il Paese</span><svg class="chev" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><path d="m6 9 6 6 6-6"/></svg></button>
           <span class="pop" id="pop"><span class="search"><input id="search" placeholder="Cerca un paese" autocomplete="off"></span><span class="list" id="list" role="listbox" style="display:block"></span></span></span><span id="weight-block"> che pesa <span class="weights" id="weights"></span>.</span></p>
       <p class="selected-line" id="sel-line" hidden><span id="sel-name"></span><span id="sel-zone"></span></p>
     </div>
@@ -261,7 +273,6 @@ main>.tabs .tab{padding:8px 18px;font-size:13.5px}
 
 <footer>
   <div class="wrap">
-    <span>Fatto con <span class="heart">♥</span> da <a href="https://www.postcrossing.com/user/spleenyeffe" target="_blank" rel="noopener">Spleenyeffe</a></span>
     <span>Tariffe al 30/04/2026 · <a href="https://www.poste.it/lettera/postamail-internazionale/zone-tariffarie-di-postamail-internazionale" target="_blank" rel="noopener">Poste Italiane ↗</a></span>
   </div>
 </footer>
@@ -308,7 +319,7 @@ const POSTE_URL="https://www.poste.it/lettera/postamail-internazionale/zone-tari
 /* ---------- STATO ---------- */
 const store={get(k,d){try{const v=localStorage.getItem("bollibelli:"+k);return v?JSON.parse(v):d}catch(e){return d}},
              set(k,v){try{localStorage.setItem("bollibelli:"+k,JSON.stringify(v))}catch(e){}}};
-const state={country:store.get("country",null),weight:store.get("weight","standard"),inv:store.get("inv",{})};
+const state={country:store.get("country",null),weight:store.get("weight",null),inv:store.get("inv",{})};
 const save=()=>{store.set("country",state.country);store.set("weight",state.weight);store.set("inv",state.inv)};
 
 /* ---------- LOGICA ---------- */
@@ -401,16 +412,16 @@ document.addEventListener("click",e=>{if(!$("combo").contains(e.target))closePop
 function renderTrova(){
   const c=countryObj();
   document.querySelector(".letter").className="letter"+(c?" z"+c.zone:"");
-  $("combo-label").textContent=c?c.name:"…dove?";
+  $("combo-label").textContent=c?c.name:"Scegli il Paese";
   $("combo-btn").classList.toggle("has",!!c);
-  $("sel-line").hidden=!c;$("weight-block").hidden=!c;
+  $("sel-line").hidden=!c;
+  $("weights").innerHTML=weightOptions(c?c.zone:1).map(o=>`<button class="weight" aria-pressed="${state.weight===o.value}" data-w="${o.value}">${o.value==="standard"?"fino a 20 g":"oltre 20 g fino a 50 g"}</button>`).join('<span class="or">o</span>');
   const r=$("result");
-  if(!c){
-    r.innerHTML=`<div class="res"><div class="ghost">Il tuo francobollo apparirà qui</div></div>`;
+  if(!c||!state.weight){
+    r.innerHTML=`<div class="res"><div class="ghost">${c?"Scegli il peso della lettera":"Il tuo francobollo apparirà qui"}</div></div>`;
     return;
   }
   $("sel-name").textContent=c.name;$("sel-zone").textContent=ZONE_SHORT(c.zone);
-  $("weights").innerHTML=weightOptions(c.zone).map(o=>`<button class="weight" aria-pressed="${state.weight===o.value}" data-w="${o.value}">${o.value==="standard"?"fino a 20 g":"oltre 20 g fino a 50 g"}</button>`).join('<span class="or">o</span>');
   const s=requiredStamp(c.zone,state.weight);
   const heavy=s.code.endsWith("50g");
   const big=s.code.replace(/-?50g$/,"")+(heavy?'<small>50g</small>':"");
@@ -440,8 +451,8 @@ function renderCombos(){
   const c=countryObj();
   $("view-combinazioni").className="cgrid"+(c?" z"+c.zone:"");
   const t=$("target");
-  if(!c){
-    t.innerHTML=`Prima, <button class="linkish" data-go="trova">scegli un paese</button>.`;
+  if(!c||!state.weight){
+    t.innerHTML=`Prima, <button class="linkish" data-go="trova">${c?"scegli il peso":"scegli un paese"}</button>.`;
   }else{
     const s=requiredStamp(c.zone,state.weight);
     t.innerHTML=`${esc(c.name)}: servono <span class="amt">${euro(s.cents)}</span>.`;
@@ -450,6 +461,7 @@ function renderCombos(){
   const hasInv=Object.keys(state.inv).length>0;
   const idle=(cls,title,text,icon)=>`<div class="panel ${cls}"><div class="panel-head"><span>${cls==="warn"?"Affrancatura incompleta":"La tua affrancatura"}</span>${icon}</div><div class="idle-body">${ICON.env}<h4>${title}</h4><p>${text}</p></div></div>`;
   if(!c){box.innerHTML=idle("idle","Dove va la tua lettera?","Scegli prima un paese.",ICON.arrow);return}
+  if(!state.weight){box.innerHTML=idle("idle","Quanto pesa la tua lettera?","Scegli prima il peso.",ICON.arrow);return}
   if(!hasInv){box.innerHTML=idle("idle","Ogni francobollo conta.","Dicci quali hai: troviamo noi le combinazioni.",ICON.arrow);return}
   const target=requiredStamp(c.zone,state.weight).cents;
   const combos=findCombinations(target,state.inv);
